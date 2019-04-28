@@ -30,9 +30,10 @@ module CitySim
       end
     end
 
+    # Center map on screen
     def position_map
-      @offset.x = normalize(window.width/2 - width/2)
-      @offset.y = normalize(window.height/2 - height/2)
+      @offset.x = normalize(window.width/2  - width/2)  * @tile_size
+      @offset.y = normalize(window.height/2 - height/2) * @tile_size
     end
 
     def width; @rows * @tile_size; end
@@ -58,10 +59,26 @@ module CitySim
       if @drag_start
         new_pos = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y)
         offset = new_pos - @drag_start
-        offset.x = normalize(offset.x)
-        offset.y = normalize(offset.y)
+        offset.x = normalize(offset.x) * @tile_size
+        offset.y = normalize(offset.y) * @tile_size
 
         @offset = offset
+      else
+
+        direction = CyberarmEngine::Vector.new
+        direction.x = -1 if Gosu.button_down?(Gosu::KbD)
+        direction.x =  1 if Gosu.button_down?(Gosu::KbA)
+        direction.y =  1 if Gosu.button_down?(Gosu::KbW)
+        direction.y = -1 if Gosu.button_down?(Gosu::KbS)
+
+        offset = @offset + (direction * @tile_size)
+        offset.x = normalize(offset.x) * @tile_size
+        offset.y = normalize(offset.y) * @tile_size
+        @offset = offset
+      end
+
+      if @tool
+        use_tool if Gosu.button_down?(Gosu::MsLeft)
       end
     end
 
@@ -79,27 +96,54 @@ module CitySim
     end
 
     def draw_tool
-      x, y = normalize(window.mouse_x), normalize(window.mouse_y)
+      x, y = normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y)
 
-      if x.between?(@offset.x, @offset.x + (@rows * @tile_size)) &&
-         y.between?(@offset.y, @offset.y + (@columns * @tile_size))
-        Gosu.draw_rect(x - @offset.x, y - @offset.y, @tile_size, @tile_size, tool_color)
+      tile = @grid.dig(x, y)
+      return unless tile
+
+      if (@tile_size * x + @offset.x).between?(@offset.x, @offset.x + (@rows * @tile_size)) &&
+         (@tile_size * y + @offset.y).between?(@offset.y, @offset.y + (@columns * @tile_size))
+        tool = Map::Tool.tools.dig(@tool)
+        return unless tool
+
+        rows = tool.rows
+        columns = tool.columns
+
+        columns.times do |_y|
+          rows.times do |_x|
+            Gosu.draw_rect(
+              (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size,
+              (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size,
+              @tile_size, @tile_size,
+              tool_color
+            )
+          end
+        end
       end
     end
 
+    def use_tool
+      x, y = normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y)
+
+      tile = @grid.dig(x,y)
+      return unless tile
+
+      tile.color = Gosu::Color::BLACK
+    end
+
     def tool_color
-      Gosu::Color.rgba(100, 100, 150, 200)
+      Gosu::Color.rgba(100, 100, 150, 100)
     end
 
     def normalize(n)
-      (n / @tile_size.to_f).floor * @tile_size
+      (n / @tile_size.to_f).floor
     end
 
-    def vary_color(color, jitter = 5)
+    def vary_color(color, jitter = 3)
       Gosu::Color.rgb(
-        color.red + rand(-jitter..jitter),
+        color.red   + rand(-jitter..jitter),
         color.green + rand(-jitter..jitter),
-        color.blue + rand(-jitter..jitter)
+        color.blue  + rand(-jitter..jitter)
       )
     end
   end

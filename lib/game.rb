@@ -5,7 +5,9 @@ module CitySim
       @active_height = window.height
 
       @map = CitySim::Map.new(rows: 32, columns: 32)
+      Map::Tool.tools # setup tools
 
+      CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
       CyberarmEngine::Theme::THEME[:Button][:background] = Gosu::Color.rgb(100, 100, 200)
       CyberarmEngine::Theme::THEME[:Button][:border_color] = Gosu::Color.rgb(100, 100, 250)
