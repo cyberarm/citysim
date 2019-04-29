@@ -1,13 +1,12 @@
 module CitySim
   class Game < CyberarmEngine::GuiState
+    attr_reader :money, :citizens
     def setup
       @active_width  = window.width
       @active_height = window.height
 
-      @map = CitySim::Map.new
+      @map = CitySim::Map.new(game: self)
       Map::Tool.tools # setup tools
-      @money = 30_000
-      @citizens = []
 
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
@@ -76,9 +75,9 @@ module CitySim
           @fps_label = label "#{Gosu.fps}"
 
           label "Money"
-          @money_label = label format_money(@money)
+          @money_label = label format_money(@map.money)
           label "Citizens"
-          @citizens_label = label @citizens.size.to_s
+          @citizens_label = label @map.citizens.size.to_s
         end
       end
     end
@@ -109,10 +108,10 @@ module CitySim
       super
 
       @map.update
+
       @fps_label.value = "#{Gosu.fps}"
-      @money += @map.income
-      @money_label.value = format_money(@money)
-      @citizens_label.value = @citizens.size.to_s
+      @money_label.value = format_money(@map.money)
+      @citizens_label.value = @map.citizens.size.to_s
       @root_container.recalculate if @active_width != window.width || @active_height != window.height
     end
   end

@@ -2,9 +2,14 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    def initialize(rows: 33, columns: 33, tile_size: 16)
+    attr_reader :money, :citizens, :elements
+    def initialize(game:, rows: 33, columns: 33, tile_size: 16)
+      @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size
+
+      @money = 30_000
+      @citizens = []
 
       @tool = nil
       @grid = {}
@@ -17,9 +22,6 @@ module CitySim
       @income = 0
       @outcome= 0
 
-      @default_tile = :land
-      @green = Gosu::Color.rgb(25, 150, 15)
-
       generate_map
       position_map
     end
@@ -28,7 +30,8 @@ module CitySim
       @columns.times do |y|
         @rows.times do |x|
           @grid[x] ||= {}
-          @grid[x][y] = Tile.new(type: @default_tile, color: vary_color(@green))
+          # @grid[x][y] = Tile.new(type: Tile::WATER, color: vary_color(Tile::WATER_COLOR))
+          @grid[x][y] = Tile.new(type: Tile::LAND, color: vary_color(Tile::LAND_COLOR))
         end
       end
     end
@@ -102,6 +105,8 @@ module CitySim
           destroy_element(normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y))
         end
       end
+
+      @money += income
     end
 
     def income
@@ -156,9 +161,11 @@ module CitySim
 
       tool = Map::Tool.tools.dig(@tool)
       return unless tool
+      return unless @money >= tool.cost
 
       return unless can_place_element?(tool, x, y)
       element = create_element(tool.places)
+      element.map = self
       @elements << element
       @outcome += tool.cost
 
@@ -230,16 +237,20 @@ module CitySim
     def destroy_element(x, y)
       _tile = @grid.dig(x, y)
       return unless _tile
+      return unless _tile.element
+
+      cost = Map::Tool.tools.dig(_tile.element.type).cost * 0.1 # 10% of original cost
+      return unless @money >= cost
+
 
       element = @elements.delete(_tile.element)
-      return unless element
-
-      @outcome += Map::Tool.tools.dig(element.type).cost * 0.1 # 10% of original cost
       grid_each do |tile, x, y|
         if tile.element == element
           tile.free
         end
       end
+
+      @outcome += cost
     end
 
     def normalize(n)
@@ -255,6 +266,9 @@ module CitySim
     end
 
     def simulate
+      @elements.each do |e|
+        e.update
+      end
     end
   end
 end

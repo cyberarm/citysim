@@ -1,8 +1,13 @@
 module CitySim
   class Map
     class Tile
+      LAND  = :land
+      WATER = :water
+      LAND_COLOR  = Gosu::Color.rgb(25, 150, 15)
+      WATER_COLOR = Gosu::Color.rgb(0, 15, 150)
+
       attr_accessor :zone, :route
-      def initialize(type: :land, color: Tile::LAND, zone: nil, route: nil)
+      def initialize(type:, color:, zone: nil, route: nil)
         @type = type
         @color= color
         @zone, @route = zone, route

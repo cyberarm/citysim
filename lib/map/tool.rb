@@ -5,7 +5,7 @@ module CitySim
       COMMERCIAL_COLOR  = Gosu::Color.rgba(25, 25, 255, 150)
       INDUSTRIAL_COLOR  = Gosu::Color.rgba(255, 25, 25, 150)
 
-      ROAD_COLOR      = Gosu::Color.rgba(0, 0, 0, 150)
+      ROAD_COLOR      = Gosu::Color.rgba(50, 50, 50, 150)
       POWERLINE_COLOR = Gosu::Color.rgba(255, 255, 25, 150)
 
       POWERPLANT_COLOR        = Gosu::Color.rgba(255, 255, 25, 150)
