@@ -5,6 +5,10 @@ module CitySim
         :zone_industrial
       end
 
+      def color
+        Gosu::Color.rgba(255, 25, 25, 150)
+      end
+
       def rows
         3
       end

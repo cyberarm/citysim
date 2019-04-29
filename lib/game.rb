@@ -57,7 +57,7 @@ module CitySim
           end
         end
 
-        stack(padding_right: 10) do
+        stack do
           label "Other"
           flow do
             button("Demolish") { @map.tool = :other_demolish }

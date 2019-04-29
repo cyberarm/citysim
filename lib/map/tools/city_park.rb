@@ -5,12 +5,16 @@ module CitySim
         :service_city_park
       end
 
+      def color
+        Gosu::Color.rgba(255, 127, 25, 150)
+      end
+
       def rows
-        3
+        2
       end
 
       def columns
-        3
+        2
       end
     end
   end

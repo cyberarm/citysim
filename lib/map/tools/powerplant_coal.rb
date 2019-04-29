@@ -5,6 +5,10 @@ module CitySim
         :powerplant_coal
       end
 
+      def color
+        Gosu::Color.rgba(255, 255, 25, 150)
+      end
+
       def rows
         3
       end

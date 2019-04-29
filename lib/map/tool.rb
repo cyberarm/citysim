@@ -28,6 +28,10 @@ module CitySim
         false
       end
 
+      def color
+        Gosu::Color.rgba(100, 100, 150, 100)
+      end
+
       def rows
         raise "#{self.class}#rows not overridden!"
       end

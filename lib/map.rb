@@ -101,23 +101,23 @@ module CitySim
       tile = @grid.dig(x, y)
       return unless tile
 
-      if (@tile_size * x + @offset.x).between?(@offset.x, @offset.x + (@rows * @tile_size)) &&
-         (@tile_size * y + @offset.y).between?(@offset.y, @offset.y + (@columns * @tile_size))
-        tool = Map::Tool.tools.dig(@tool)
-        return unless tool
+      tool = Map::Tool.tools.dig(@tool)
+      return unless tool
 
-        rows = tool.rows
-        columns = tool.columns
+      rows = tool.rows
+      columns = tool.columns
 
-        columns.times do |_y|
-          rows.times do |_x|
-            Gosu.draw_rect(
-              (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size,
-              (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size,
-              @tile_size, @tile_size,
-              tool_color
-            )
-          end
+      columns.times do |_y|
+        rows.times do |_x|
+          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
+          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
+
+          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
+          Gosu.draw_rect(
+            gx, gy,
+            @tile_size, @tile_size,
+            _tile && _tile.type == :land ? tool.color : Gosu::Color::RED
+          )
         end
       end
     end
@@ -128,11 +128,22 @@ module CitySim
       tile = @grid.dig(x,y)
       return unless tile
 
-      tile.color = Gosu::Color::BLACK
-    end
+      tool = Map::Tool.tools.dig(@tool)
+      return unless tool
 
-    def tool_color
-      Gosu::Color.rgba(100, 100, 150, 100)
+      rows = tool.rows
+      columns = tool.columns
+
+      columns.times do |_y|
+        rows.times do |_x|
+          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
+          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
+
+          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
+          _tile.type  = tool.places
+          _tile.color = tool.color
+        end
+      end
     end
 
     def normalize(n)

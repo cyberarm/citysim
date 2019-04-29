@@ -5,6 +5,10 @@ module CitySim
         :service_police_department
       end
 
+      def color
+        Gosu::Color.rgba(255, 127, 127, 150)
+      end
+
       def rows
         3
       end

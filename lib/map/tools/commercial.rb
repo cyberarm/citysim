@@ -5,6 +5,10 @@ module CitySim
         :zone_commercial
       end
 
+      def color
+        Gosu::Color.rgba(25, 25, 255, 150)
+      end
+
       def rows
         3
       end

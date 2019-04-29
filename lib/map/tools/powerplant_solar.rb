@@ -5,6 +5,10 @@ module CitySim
         :powerplant_solar
       end
 
+      def color
+        Gosu::Color.rgba(255, 255, 25, 150)
+      end
+
       def rows
         8
       end
