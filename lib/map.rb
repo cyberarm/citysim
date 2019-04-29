@@ -36,6 +36,17 @@ module CitySim
       @offset.y = normalize(window.height/2 - height/2) * @tile_size
     end
 
+    def grid_each(&block)
+      @columns.times do |y|
+        @rows.times do |x|
+          tile = @grid.dig(x, y)
+          next unless tile
+
+          block.call(tile, x, y)
+        end
+      end
+    end
+
     def width; @rows * @tile_size; end
     def height; @columns * @tile_size; end
 
@@ -79,6 +90,9 @@ module CitySim
 
       if @tool
         use_tool if Gosu.button_down?(Gosu::MsLeft)
+        if @tool == :other_demolish && Gosu.button_down?(Gosu::MsRight)
+          destroy_element(normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y))
+        end
       end
     end
 
@@ -204,7 +218,12 @@ module CitySim
       _tile = @grid.dig(x, y)
       return unless _tile
 
-      @elements.delete(_tile.element)
+      element = @elements.delete(_tile.element)
+      grid_each do |tile, x, y|
+        if tile.element == element
+          tile.free
+        end
+      end
     end
 
     def normalize(n)

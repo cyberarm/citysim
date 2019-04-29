@@ -26,6 +26,11 @@ module CitySim
         @zone ? @zone : @route
       end
 
+      def free
+        @zone = nil
+        @route= nil
+      end
+
       def available?
         !@zone && !@route
       end
