@@ -1,14 +1,14 @@
 module CitySim
   class Map
     include CyberarmEngine::Common
-    Tile = Struct.new(:type, :color)
 
-    def initialize(rows:, columns:, tile_size: 16)
+    def initialize(rows: 33, columns: 33, tile_size: 16)
       @rows, @columns = rows, columns
       @tile_size = tile_size
 
       @tool = nil
       @grid = {}
+      @elements = []
 
       @drag_start = nil
       @drag_speed = 0.1
@@ -25,7 +25,7 @@ module CitySim
       @columns.times do |y|
         @rows.times do |x|
           @grid[x] ||= {}
-          @grid[x][y] = Tile.new(@default_tile, vary_color(@green))
+          @grid[x][y] = Tile.new(type: @default_tile, color: vary_color(@green))
         end
       end
     end
@@ -116,7 +116,7 @@ module CitySim
           Gosu.draw_rect(
             gx, gy,
             @tile_size, @tile_size,
-            _tile && _tile.type == :land ? tool.color : Gosu::Color::RED
+            _tile && _tile.available? ? tool.color : Gosu::Color::RED
           )
         end
       end
@@ -131,6 +131,10 @@ module CitySim
       tool = Map::Tool.tools.dig(@tool)
       return unless tool
 
+      return unless can_place_element?(tool, x, y)
+      element = create_element(tool.places)
+      @elements << element
+
       rows = tool.rows
       columns = tool.columns
 
@@ -140,10 +144,67 @@ module CitySim
           gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
 
           _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
-          _tile.type  = tool.places
-          _tile.color = tool.color
+          _tile.send(:"#{tool.type}=", element)
         end
       end
+    end
+
+    def can_place_element?(tool, x, y)
+      able = true
+
+      rows = tool.rows
+      columns = tool.columns
+
+      columns.times do |_y|
+        rows.times do |_x|
+          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
+          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
+
+          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
+          able = false if _tile.nil? || !_tile.available?
+        end
+      end
+
+      return able
+    end
+
+    def create_element(places)
+      case places
+      when :zone_residential
+        ResidentialZone.new
+      when :zone_commercial
+        CommercialZone.new
+      when :zone_industrial
+        IndustrialZone.new
+
+      when :route_road
+        RoadRoute.new
+      when :route_powerline
+        PowerLineRoute.new
+
+      when :powerplant_coal
+        PowerPlantCoalZone.new
+      when :powerplant_solar
+        PowerPlantSolarZone.new
+      when :powerplant_nuclear
+        PowerPlantNuclearZone.new
+
+      when :service_fire_department
+        FireDepartmentZone.new
+      when :service_police_department
+        PoliceDepartmentZone.new
+      when :service_city_park
+        CityParkZone.new
+      else
+        raise "No such zone/route!"
+      end
+    end
+
+    def destroy_element(x, y)
+      _tile = @grid.dig(x, y)
+      return unless _tile
+
+      @elements.delete(_tile.element)
     end
 
     def normalize(n)

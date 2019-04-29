@@ -1,8 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class PowerPlantZone < Zone
       def color
-        Gosu::Color::CYAN
+        Tool::POWERPLANT_COLOR
       end
 
       def update

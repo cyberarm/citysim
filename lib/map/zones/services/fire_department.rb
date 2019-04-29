@@ -1,8 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class FireDepartmentZone < Zone
       def color
-        Gosu::Color::CYAN
+        Tool::FIRE_DEPARTMENT_COLOR
       end
 
       def update

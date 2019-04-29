@@ -1,8 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class PoliceDepartmentZone < Zone
       def color
-        Gosu::Color::CYAN
+        Tool::POLICE_DEPARTMENT_COLOR
       end
 
       def update

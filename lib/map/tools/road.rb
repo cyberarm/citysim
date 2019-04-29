@@ -5,8 +5,12 @@ module CitySim
         :route_road
       end
 
+      def type
+        :route
+      end
+
       def color
-        Gosu::Color.rgba(0, 0, 0, 150)
+        Tool::ROAD_COLOR
       end
 
       def rows

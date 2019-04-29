@@ -1,8 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class CityParkZone < Zone
       def color
-        Gosu::Color::CYAN
+        Tool::CITY_PARK_COLOR
       end
 
       def update

@@ -5,8 +5,12 @@ module CitySim
         :route_powerline
       end
 
+      def type
+        :route
+      end
+
       def color
-        Gosu::Color.rgba(255, 255, 25, 150)
+        Tool::POWERLINE_COLOR
       end
 
       def rows

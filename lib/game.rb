@@ -4,7 +4,7 @@ module CitySim
       @active_width  = window.width
       @active_height = window.height
 
-      @map = CitySim::Map.new(rows: 32, columns: 32)
+      @map = CitySim::Map.new
       Map::Tool.tools # setup tools
 
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22

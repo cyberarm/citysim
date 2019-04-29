@@ -6,7 +6,7 @@ module CitySim
       end
 
       def color
-        Gosu::Color.rgba(255, 0, 127, 150)
+        Tool::FIRE_DEPARTMENT_COLOR
       end
 
       def rows

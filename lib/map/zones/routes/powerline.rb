@@ -1,11 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class PowerLineRoute < Route
       def color
-        Gosu::Color::CYAN
-      end
-
-      def update
+        Tool::POWERLINE_COLOR
       end
     end
   end

@@ -1,11 +1,8 @@
 module CitySim
   class Map
-    class Zone
+    class RoadRoute < Route
       def color
-        Gosu::Color::CYAN
-      end
-
-      def update
+        Tool::ROAD_COLOR
       end
     end
   end

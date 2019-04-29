@@ -1,6 +1,18 @@
 module CitySim
   class Map
     class Tool
+      RESIDENTIAL_COLOR = Gosu::Color.rgba(25, 200, 25, 150)
+      COMMERCIAL_COLOR  = Gosu::Color.rgba(25, 25, 255, 150)
+      INDUSTRIAL_COLOR  = Gosu::Color.rgba(255, 25, 25, 150)
+
+      ROAD_COLOR      = Gosu::Color.rgba(0, 0, 0, 150)
+      POWERLINE_COLOR = Gosu::Color.rgba(255, 255, 25, 150)
+
+      POWERPLANT_COLOR = Gosu::Color.rgba(255, 255, 25, 150)
+      CITY_PARK_COLOR = Gosu::Color.rgba(255, 127, 25, 150)
+      FIRE_DEPARTMENT_COLOR = Gosu::Color.rgba(255, 0, 127, 150)
+      POLICE_DEPARTMENT_COLOR = Gosu::Color.rgba(255, 127, 127, 150)
+
       def self.tools
         unless @tools
           @tools = {}
@@ -26,6 +38,10 @@ module CitySim
 
       def demolishes?
         false
+      end
+
+      def type
+        :zone
       end
 
       def color

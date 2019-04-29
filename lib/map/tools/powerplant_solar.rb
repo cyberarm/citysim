@@ -6,7 +6,7 @@ module CitySim
       end
 
       def color
-        Gosu::Color.rgba(255, 255, 25, 150)
+        Tool::POWERPLANT_COLOR
       end
 
       def rows
