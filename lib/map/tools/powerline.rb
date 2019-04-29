@@ -13,6 +13,10 @@ module CitySim
         Tool::POWERLINE_COLOR
       end
 
+      def cost
+        Tool::POWERLINE_COST
+      end
+
       def rows
         1
       end

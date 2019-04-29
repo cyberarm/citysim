@@ -9,6 +9,10 @@ module CitySim
         Tool::INDUSTRIAL_COLOR
       end
 
+      def cost
+        Tool::INDUSTRIAL_COST
+      end
+
       def rows
         3
       end

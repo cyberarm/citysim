@@ -9,6 +9,10 @@ module CitySim
         Tool::CITY_PARK_COLOR
       end
 
+      def cost
+        Tool::CITY_PARK_COST
+      end
+
       def rows
         2
       end

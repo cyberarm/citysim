@@ -9,6 +9,10 @@ module CitySim
         Tool::POLICE_DEPARTMENT_COLOR
       end
 
+      def cost
+        Tool::POLICE_DEPARTMENT_COST
+      end
+
       def rows
         3
       end

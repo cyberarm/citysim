@@ -9,6 +9,10 @@ module CitySim
         Tool::RESIDENTIAL_COLOR
       end
 
+      def cost
+        Tool::RESIDENTIAL_COST
+      end
+
       def rows
         3
       end

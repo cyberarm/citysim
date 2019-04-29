@@ -6,6 +6,8 @@ module CitySim
 
       @map = CitySim::Map.new
       Map::Tool.tools # setup tools
+      @money = 30_000
+      @citizens = []
 
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
@@ -20,9 +22,9 @@ module CitySim
       CyberarmEngine::Theme::THEME[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
       CyberarmEngine::Theme::THEME[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      background Gosu::Color.rgba(125,125,150, 200)
-      flow do
-        stack(padding_right: 10) do
+      flow(padding: 5) do
+        background Gosu::Color.rgba(125,125,150, 200)
+        stack(margin_left: 5, padding_right: 10) do
           label "Zones"
           flow do
             button("Residential") { @map.tool = :zone_residential }
@@ -65,6 +67,24 @@ module CitySim
           end
         end
       end
+
+      stack do
+        background Gosu::Color.rgba(125,125,150, 200)
+
+        stack(margin: 5) do
+          label "Game FPS"
+          @fps_label = label "#{Gosu.fps}"
+
+          label "Money"
+          @money_label = label format_money(@money)
+          label "Citizens"
+          @citizens_label = label @citizens.size.to_s
+        end
+      end
+    end
+
+    def format_money(int, currency = "$")
+      sprintf("#{currency}%.2f", int.to_f)
     end
 
     def draw
@@ -89,6 +109,10 @@ module CitySim
       super
 
       @map.update
+      @fps_label.value = "#{Gosu.fps}"
+      @money += @map.income
+      @money_label.value = format_money(@money)
+      @citizens_label.value = @citizens.size.to_s
       @root_container.recalculate if @active_width != window.width || @active_height != window.height
     end
   end

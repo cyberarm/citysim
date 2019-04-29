@@ -9,6 +9,10 @@ module CitySim
         Tool::POWERPLANT_COLOR
       end
 
+      def cost
+        Tool::POWERPLANT_NUCLEAR_COST
+      end
+
       def rows
         4
       end

@@ -13,6 +13,10 @@ module CitySim
         Tool::ROAD_COLOR
       end
 
+      def cost
+        Tool::ROAD_COST
+      end
+
       def rows
         1
       end

@@ -9,6 +9,10 @@ module CitySim
         Tool::FIRE_DEPARTMENT_COLOR
       end
 
+      def cost
+        Tool::FIRE_DEPARTMENT_COST
+      end
+
       def rows
         3
       end
