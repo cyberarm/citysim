@@ -99,7 +99,7 @@ module CitySim
 
       simulate
 
-      if @tool
+      if !@game.mouse_over_menu? && @tool
         use_tool if Gosu.button_down?(Gosu::MsLeft)
         if @tool == :other_demolish && Gosu.button_down?(Gosu::MsLeft)
           destroy_element(normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y))

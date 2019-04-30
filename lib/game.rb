@@ -21,7 +21,7 @@ module CitySim
       CyberarmEngine::Theme::THEME[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
       CyberarmEngine::Theme::THEME[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      flow(padding: 5) do
+      @toolbar = flow(padding: 5) do
         background Gosu::Color.rgba(125,125,150, 200)
         stack(margin_left: 5, padding_right: 10) do
           label "Zones"
@@ -67,7 +67,7 @@ module CitySim
         end
       end
 
-      stack do
+      @info_bar = stack do
         background Gosu::Color.rgba(125,125,150, 200)
 
         stack(margin: 5) do
@@ -84,6 +84,10 @@ module CitySim
 
     def format_money(int, currency = "$")
       sprintf("#{currency}%.2f", int.to_f)
+    end
+
+    def mouse_over_menu?
+      @toolbar.hit?(window.mouse_x, window.mouse_y) || @info_bar.hit?(window.mouse_x, window.mouse_y)
     end
 
     def draw

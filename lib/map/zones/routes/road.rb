@@ -39,55 +39,83 @@ module CitySim
           when :left
             @image = @roads[:straight]
             @angle = 90
-            list.values.each {|l| l.element.align_with_neighbors(false)} if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           when :right
             @image = @roads[:straight]
             @angle = 90
-            list.values.each {|l| l.element.align_with_neighbors(false)} if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           when :up
             @image = @roads[:straight]
             @angle = 0
-            list.values.each {|l| l.element.align_with_neighbors(false)} if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           when :down
             @image = @roads[:straight]
             @angle = 0
-            list.values.each {|l| l.element.align_with_neighbors(false)} if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           end
 
         when 2
           if mode.include?(:left) && mode.include?(:right)
             @image = @roads[:straight]
             @angle = 90
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
           elsif mode.include?(:down) && mode.include?(:up)
             @image = @roads[:straight]
+            @angle = 0
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
           elsif mode.include?(:left) && mode.include?(:up)
             @image = @roads[:t_intersection]
             @angle = 180
-            list[:left].element.align_with_neighbors(false) if mutate
-            list[:up].element.align_with_neighbors(false) if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
           elsif mode.include?(:right) && mode.include?(:up)
             @image = @roads[:t_intersection]
             @angle = 180
-            list[:right].element.align_with_neighbors(false) if mutate
-            list[:up].element.align_with_neighbors(false) if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
           elsif mode.include?(:left) && mode.include?(:down)
             @image = @roads[:t_intersection]
             @angle = 90
-            list[:left].element.align_with_neighbors(false) if mutate
-            list[:down].element.align_with_neighbors(false) if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
           elsif mode.include?(:right) && mode.include?(:down)
             @image = @roads[:t_intersection]
             @angle = -90
-            list[:right].element.align_with_neighbors(false) if mutate
-            list[:down].element.align_with_neighbors(false) if mutate
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           else
-            raise mode
+            raise "RoadTool: 2-way: #{list.keys}"
           end
 
         when 3
-          puts :triggered_3way
+          if mode.include?(:left) && mode.include?(:up) && mode.include?(:down)
+            @image = @roads[:t_intersection]
+            @angle = 90
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
+          elsif mode.include?(:right) && mode.include?(:up) && mode.include?(:down)
+            @image = @roads[:t_intersection]
+            @angle = -90
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
+          elsif mode.include?(:left) && mode.include?(:right) && mode.include?(:down)
+            @image = @roads[:t_intersection]
+            @angle = 0
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+
+          elsif mode.include?(:left) && mode.include?(:right) && mode.include?(:up)
+            @image = @roads[:t_intersection]
+            @angle = 180
+            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+          else
+            raise "RoadTool: 3-way: #{list.keys}"
+          end
+
         when 4
           @image = @roads[:four_way_intersection]
+          @angle = 0
+          list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
         end
       end
     end
