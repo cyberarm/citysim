@@ -112,7 +112,11 @@ module CitySim
       @fps_label.value = "#{Gosu.fps}"
       @money_label.value = format_money(@map.money)
       @citizens_label.value = @map.citizens.size.to_s
+
       @root_container.recalculate if @active_width != window.width || @active_height != window.height
+
+      @active_width  = window.width
+      @active_height = window.height
     end
   end
 end

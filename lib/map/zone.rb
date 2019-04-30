@@ -1,13 +1,20 @@
 module CitySim
   class Map
     class Zone
-      def initialize(type)
+      include CyberarmEngine::Common
+
+      attr_reader :position
+      def initialize(map, type, position)
+        @map  = map
         @type = type
-        @map  = nil
+        @position = position
+
+        @tile_size = @map.tile_size
+
+        setup
       end
 
-      def map=(_map)
-        @map = _map
+      def setup
       end
 
       def type
@@ -16,6 +23,9 @@ module CitySim
 
       def color
         Gosu::Color::CYAN
+      end
+
+      def draw
       end
 
       def update

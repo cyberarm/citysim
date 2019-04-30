@@ -2,8 +2,8 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    attr_reader :money, :citizens, :elements
-    def initialize(game:, rows: 33, columns: 33, tile_size: 16)
+    attr_reader :money, :citizens, :elements, :tile_size
+    def initialize(game:, rows: 33, columns: 33, tile_size: 64)
       @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size
@@ -64,7 +64,7 @@ module CitySim
       Gosu.translate(@offset.x, @offset.y) do
         @columns.times do |y|
           @rows.times do |x|
-            Gosu.draw_rect(x * @tile_size, y * @tile_size, @tile_size, @tile_size, @grid[x][y].color, -1)
+            @grid[x][y].draw(x, y, @tile_size)
           end
         end
 
@@ -164,9 +164,9 @@ module CitySim
       return unless @money >= tool.cost
 
       return unless can_place_element?(tool, x, y)
-      element = create_element(tool.places)
-      element.map = self
+      element = create_element(tool.places, CyberarmEngine::Vector.new(x, y))
       @elements << element
+
       @outcome += tool.cost
 
       rows = tool.rows
@@ -181,6 +181,8 @@ module CitySim
           _tile.send(:"#{tool.type}=", element)
         end
       end
+
+      element.align_with_neighbors if element.is_a?(RoadRoute)
     end
 
     def can_place_element?(tool, x, y)
@@ -202,33 +204,33 @@ module CitySim
       return able
     end
 
-    def create_element(places)
+    def create_element(places, position)
       case places
       when :zone_residential
-        ResidentialZone.new(:zone_residential)
+        ResidentialZone.new(self, :zone_residential, position)
       when :zone_commercial
-        CommercialZone.new(:zone_commercial)
+        CommercialZone.new(self, :zone_commercial, position)
       when :zone_industrial
-        IndustrialZone.new(:zone_industrial)
+        IndustrialZone.new(self, :zone_industrial, position)
 
       when :route_road
-        RoadRoute.new(:route_road)
+        RoadRoute.new(self, :route_road, position)
       when :route_powerline
-        PowerLineRoute.new(:route_powerline)
+        PowerLineRoute.new(self, :route_powerline, position)
 
       when :powerplant_coal
-        PowerPlantCoalZone.new(:powerplant_coal)
+        PowerPlantCoalZone.new(self, :powerplant_coal, position)
       when :powerplant_solar
-        PowerPlantSolarZone.new(:powerplant_solar)
+        PowerPlantSolarZone.new(self, :powerplant_solar, position)
       when :powerplant_nuclear
-        PowerPlantNuclearZone.new(:powerplant_nuclear)
+        PowerPlantNuclearZone.new(self, :powerplant_nuclear, position)
 
       when :service_fire_department
-        FireDepartmentZone.new(:service_fire_department)
+        FireDepartmentZone.new(self, :service_fire_department, position)
       when :service_police_department
-        PoliceDepartmentZone.new(:service_police_department)
+        PoliceDepartmentZone.new(self, :service_police_department, position)
       when :service_city_park
-        CityParkZone.new(:service_city_park)
+        CityParkZone.new(self, :service_city_park, position)
       else
         raise "No such zone/route!"
       end
@@ -269,6 +271,34 @@ module CitySim
       @elements.each do |e|
         e.update
       end
+    end
+
+    def neighbors(element, search = :eight_way, limit = Zone)
+      # :four_way - Get all elements along edges
+      # :eight_way - Get all elements bordering element
+
+      list = {}
+
+      tool = Map::Tool.tools.dig(element.type)
+      position = element.position
+      if tool.rows * tool.columns == 1
+        # search immediate neighbors only
+        list[:left]  = @grid[position.x - 1][position.y] if @grid[position.x - 1][position.y].element.is_a?(limit)
+        list[:right] = @grid[position.x + 1][position.y] if @grid[position.x + 1][position.y].element.is_a?(limit)
+        list[:up]    = @grid[position.x][position.y - 1] if @grid[position.x][position.y - 1].element.is_a?(limit)
+        list[:down]  = @grid[position.x][position.y + 1] if @grid[position.x][position.y + 1].element.is_a?(limit)
+
+        if search == :eight_way
+          list[:top_left]     = @grid[position.x - 1][position.y - 1] if @grid[position.x - 1][position.y - 1].element.is_a?(limit)
+          list[:top_right]    = @grid[position.x + 1][position.y - 1] if @grid[position.x + 1][position.y - 1].element.is_a?(limit)
+          list[:bottom_left]  = @grid[position.x - 1][position.y + 1] if @grid[position.x - 1][position.y + 1].element.is_a?(limit)
+          list[:bottom_right] = @grid[position.x + 1][position.y + 1] if @grid[position.x + 1][position.y + 1].element.is_a?(limit)
+        end
+      else
+        # search edges and return an Array for each side
+      end
+
+      return list
     end
   end
 end
