@@ -67,9 +67,13 @@ module CitySim
       end
 
       def use(x, y, element)
+        tiles = []
         each_tile(x, y) do |_x, _y, _tile|
+          tiles << _tile
           _tile.send(:"#{type}=", element)
         end
+
+        element.tiles = tiles
       end
 
       def can_use?(x, y)
@@ -92,6 +96,18 @@ module CitySim
             _tile = @map.grid.dig(gx / @map.tile_size, gy / @map.tile_size)
             block.call(gx, gy, _tile)
           end
+        end
+      end
+
+      def draw
+        return unless @map.active_tile
+
+        each_tile(@map.grid_x , @map.grid_y) do |gx, gy, _tile|
+          Gosu.draw_rect(
+            gx, gy,
+            @map.tile_size, @map.tile_size,
+            _tile && _tile.available? ? color : Gosu::Color::RED
+          )
         end
       end
 

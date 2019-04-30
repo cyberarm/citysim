@@ -6,15 +6,17 @@ module CitySim
       LAND_COLOR  = Gosu::Color.rgb(25, 150, 15)
       WATER_COLOR = Gosu::Color.rgb(0, 15, 150)
 
+      attr_reader :position
       attr_accessor :zone, :route
-      def initialize(type:, color:, zone: nil, route: nil)
+      def initialize(position:, type:, color:, zone: nil, route: nil)
+        @position = position
         @type = type
         @color= color
         @zone, @route = zone, route
       end
 
-      def draw(x, y, tile_size)
-        Gosu.draw_rect(x * tile_size, y * tile_size, tile_size, tile_size, element && element.is_a?(Route) ? @color : color, -1)
+      def draw(tile_size)
+        Gosu.draw_rect(position.x * tile_size, position.y * tile_size, tile_size, tile_size, element && element.is_a?(Route) ? @color : color, -1)
         element.draw if element
       end
 

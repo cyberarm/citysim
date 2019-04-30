@@ -4,11 +4,13 @@ module CitySim
       include CyberarmEngine::Common
 
       attr_reader :position
+      attr_accessor :tiles
       def initialize(map, type, position)
         @map  = map
         @type = type
         @position = position
 
+        @tiles = []
         @tile_size = @map.tile_size
 
         setup

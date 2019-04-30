@@ -31,7 +31,7 @@ module CitySim
         @rows.times do |x|
           @grid[x] ||= {}
           # @grid[x][y] = Tile.new(type: Tile::WATER, color: vary_color(Tile::WATER_COLOR))
-          @grid[x][y] = Tile.new(type: Tile::LAND, color: vary_color(Tile::LAND_COLOR))
+          @grid[x][y] = Tile.new(position: CyberarmEngine::Vector.new(x, y), type: Tile::LAND, color: vary_color(Tile::LAND_COLOR))
         end
       end
     end
@@ -64,11 +64,11 @@ module CitySim
       Gosu.translate(@offset.x, @offset.y) do
         @columns.times do |y|
           @rows.times do |x|
-            @grid[x][y].draw(x, y, @tile_size)
+            @grid[x][y].draw(@tile_size)
           end
         end
 
-        draw_tool if @tool
+        tool.draw if tool
       end
     end
 
@@ -106,6 +106,10 @@ module CitySim
       @money += income
     end
 
+    def tool
+      Map::Tool.tools.dig(@tool)
+    end
+
     def income
       @income - @outcome
     end
@@ -135,21 +139,6 @@ module CitySim
     # Mouse position in grid coordinates
     def grid_y
       normalize(window.mouse_y - @offset.y)
-    end
-
-    def draw_tool
-      return unless active_tile
-
-      tool = Map::Tool.tools.dig(@tool)
-      return unless tool
-
-      tool.each_tile(grid_x , grid_y) do |gx, gy, _tile|
-        Gosu.draw_rect(
-          gx, gy,
-          @tile_size, @tile_size,
-          _tile && _tile.available? ? tool.color : Gosu::Color::RED
-        )
-      end
     end
 
     def use_tool
