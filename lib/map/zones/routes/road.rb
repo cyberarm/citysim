@@ -3,6 +3,7 @@ module CitySim
     class RoadRoute < Route
       def setup
         @roads = {
+          curve:                get_image("assets/road_curve.png"),
           straight:             get_image("assets/road.png"),
           t_intersection:       get_image("assets/road_T.png"),
           four_way_intersection: get_image("assets/road_4_way.png"),
@@ -65,24 +66,25 @@ module CitySim
             @angle = 0
             list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
 
+          # CURVES
           elsif mode.include?(:left) && mode.include?(:up)
-            @image = @roads[:t_intersection]
+            @image = @roads[:curve]
             @angle = 180
             list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
 
           elsif mode.include?(:right) && mode.include?(:up)
-            @image = @roads[:t_intersection]
-            @angle = 180
+            @image = @roads[:curve]
+            @angle = -90
             list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
 
           elsif mode.include?(:left) && mode.include?(:down)
-            @image = @roads[:t_intersection]
+            @image = @roads[:curve]
             @angle = 90
             list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
 
           elsif mode.include?(:right) && mode.include?(:down)
-            @image = @roads[:t_intersection]
-            @angle = -90
+            @image = @roads[:curve]
+            @angle = 0
             list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
           else
             raise "RoadTool: 2-way: #{list.keys}"
