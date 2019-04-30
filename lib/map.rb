@@ -2,7 +2,7 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    attr_reader :money, :citizens, :elements, :tile_size
+    attr_reader :money, :citizens, :elements, :tile_size, :grid
     def initialize(game:, rows: 33, columns: 33, tile_size: 64)
       @game = game
       @rows, @columns = rows, columns
@@ -101,9 +101,6 @@ module CitySim
 
       if !@game.mouse_over_menu? && @tool
         use_tool if Gosu.button_down?(Gosu::MsLeft)
-        if @tool == :other_demolish && Gosu.button_down?(Gosu::MsLeft)
-          destroy_element(normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y))
-        end
       end
 
       @money += income
@@ -126,82 +123,53 @@ module CitySim
       end
     end
 
-    def draw_tool
-      x, y = normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y)
+    def active_tile
+      @grid.dig(grid_x,grid_y)
+    end
 
-      tile = @grid.dig(x, y)
-      return unless tile
+    # Mouse position in grid coordinates
+    def grid_x
+      normalize(window.mouse_x - @offset.x)
+    end
+
+    # Mouse position in grid coordinates
+    def grid_y
+      normalize(window.mouse_y - @offset.y)
+    end
+
+    def draw_tool
+      return unless active_tile
 
       tool = Map::Tool.tools.dig(@tool)
       return unless tool
 
-      rows = tool.rows
-      columns = tool.columns
-
-      columns.times do |_y|
-        rows.times do |_x|
-          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
-          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
-
-          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
-          Gosu.draw_rect(
-            gx, gy,
-            @tile_size, @tile_size,
-            _tile && _tile.available? ? tool.color : Gosu::Color::RED
-          )
-        end
+      tool.each_tile(grid_x , grid_y) do |gx, gy, _tile|
+        Gosu.draw_rect(
+          gx, gy,
+          @tile_size, @tile_size,
+          _tile && _tile.available? ? tool.color : Gosu::Color::RED
+        )
       end
     end
 
     def use_tool
-      x, y = normalize(window.mouse_x - @offset.x), normalize(window.mouse_y - @offset.y)
-
-      tile = @grid.dig(x,y)
-      return unless tile
+      return unless active_tile
 
       tool = Map::Tool.tools.dig(@tool)
       return unless tool
       return unless @money >= tool.cost
 
-      return unless can_place_element?(tool, x, y)
-      element = create_element(tool.places, CyberarmEngine::Vector.new(x, y))
-      @elements << element
+      return unless tool.can_use?(grid_x, grid_y)
+      element = nil
 
-      @outcome += tool.cost
-
-      rows = tool.rows
-      columns = tool.columns
-
-      columns.times do |_y|
-        rows.times do |_x|
-          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
-          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
-
-          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
-          _tile.send(:"#{tool.type}=", element)
-        end
+      unless tool.type == :demolition
+        element = create_element(tool.places, CyberarmEngine::Vector.new(grid_x, grid_y))
+        @elements << element
       end
 
-      element.align_with_neighbors if element.is_a?(RoadRoute)
-    end
+      charge(tool.cost)
 
-    def can_place_element?(tool, x, y)
-      able = true
-
-      rows = tool.rows
-      columns = tool.columns
-
-      columns.times do |_y|
-        rows.times do |_x|
-          gx = (@tile_size * x - ((rows/2.0).floor * @tile_size))    + _x * @tile_size
-          gy = (@tile_size * y - ((columns/2.0).floor * @tile_size)) + _y * @tile_size
-
-          _tile = @grid.dig(gx / @tile_size, gy / @tile_size)
-          able = false if _tile.nil? || !_tile.available?
-        end
-      end
-
-      return able
+      tool.use(grid_x, grid_y, element)
     end
 
     def create_element(places, position)
@@ -236,22 +204,7 @@ module CitySim
       end
     end
 
-    def destroy_element(x, y)
-      _tile = @grid.dig(x, y)
-      return unless _tile
-      return unless _tile.element
-
-      cost = Map::Tool.tools.dig(_tile.element.type).cost * 0.1 # 10% of original cost
-      return unless @money >= cost
-
-
-      element = @elements.delete(_tile.element)
-      grid_each do |tile, x, y|
-        if tile.element == element
-          tile.free
-        end
-      end
-
+    def charge(cost)
       @outcome += cost
     end
 

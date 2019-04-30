@@ -33,6 +33,7 @@ require_relative "lib/map/tools/powerplant_nuclear"
 require_relative "lib/map/tools/fire_department"
 require_relative "lib/map/tools/police_department"
 require_relative "lib/map/tools/city_park"
+require_relative "lib/map/tools/demolish"
 
 require_relative "lib/menus/main"
 require_relative "lib/game"

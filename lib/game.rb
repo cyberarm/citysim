@@ -6,7 +6,7 @@ module CitySim
       @active_height = window.height
 
       @map = CitySim::Map.new(game: self)
-      Map::Tool.tools # setup tools
+      Map::Tool.tools(@map) # setup tools
 
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
