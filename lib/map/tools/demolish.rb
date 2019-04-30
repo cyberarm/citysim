@@ -52,7 +52,7 @@ module CitySim
             Gosu.draw_rect(
               gx, gy,
               @map.tile_size, @map.tile_size,
-              _tile && _tile.available? ? color : Gosu::Color::RED
+              Tool::NO_DEMOLISH_COLOR
             )
           end
         end

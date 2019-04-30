@@ -14,6 +14,8 @@ module CitySim
       POLICE_DEPARTMENT_COLOR = Gosu::Color.rgba(255, 127, 127, 150)
 
       DEMOLISH_COLOR = Gosu::Color.rgba(200, 45, 32, 150)
+      NO_DEMOLISH_COLOR = Gosu::Color.rgba(200, 100, 100, 150)
+      OCCUPIED_TILE_COLOR = Gosu::Color.rgba(255, 0, 0, 200)
 
       RESIDENTIAL_COST = 100
       COMMERCIAL_COST  = 100
@@ -106,7 +108,7 @@ module CitySim
           Gosu.draw_rect(
             gx, gy,
             @map.tile_size, @map.tile_size,
-            _tile && _tile.available? ? color : Gosu::Color::RED
+            _tile && _tile.available? ? color : Tool::OCCUPIED_TILE_COLOR
           )
         end
       end
