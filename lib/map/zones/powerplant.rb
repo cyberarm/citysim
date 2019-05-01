@@ -5,7 +5,8 @@ module CitySim
         Tool::POWERPLANT_COLOR
       end
 
-      def update
+      def label
+        "Power Plant"
       end
     end
   end

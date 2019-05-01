@@ -10,7 +10,8 @@ module CitySim
         Tool::RESIDENTIAL_COLOR
       end
 
-      def update
+      def label
+        "Residential"
       end
     end
   end

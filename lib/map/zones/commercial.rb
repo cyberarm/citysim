@@ -5,7 +5,8 @@ module CitySim
         Tool::COMMERCIAL_COLOR
       end
 
-      def update
+      def label
+        "Commercial"
       end
     end
   end

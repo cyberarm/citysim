@@ -5,7 +5,8 @@ module CitySim
         Tool::INDUSTRIAL_COLOR
       end
 
-      def update
+      def label
+        "Industrial"
       end
     end
   end

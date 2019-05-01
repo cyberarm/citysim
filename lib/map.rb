@@ -69,6 +69,8 @@ module CitySim
           end
         end
 
+        @elements.each(&:draw)
+
         tool.draw if tool
       end
     end
@@ -129,6 +131,9 @@ module CitySim
       case id
       when Gosu::MsMiddle
         @drag_start = nil
+      when Gosu::KbEscape
+        # pause_menu unless @tool
+        @tool = nil if @tool
       end
     end
 

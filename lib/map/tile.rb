@@ -16,8 +16,7 @@ module CitySim
       end
 
       def draw(tile_size)
-        Gosu.draw_rect(position.x * tile_size, position.y * tile_size, tile_size, tile_size, element && element.is_a?(Route) ? @color : color, -1)
-        element.draw if element
+        Gosu.draw_rect(position.x * tile_size, position.y * tile_size, tile_size, tile_size, @color, -1) # LAND
       end
 
       def type

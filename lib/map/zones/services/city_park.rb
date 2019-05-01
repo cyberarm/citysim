@@ -5,7 +5,8 @@ module CitySim
         Tool::CITY_PARK_COLOR
       end
 
-      def update
+      def label
+        "City Park"
       end
     end
   end

@@ -5,7 +5,8 @@ module CitySim
         Tool::FIRE_DEPARTMENT_COLOR
       end
 
-      def update
+      def label
+        "Fire Dept."
       end
     end
   end

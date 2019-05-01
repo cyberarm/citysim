@@ -5,7 +5,8 @@ module CitySim
         Tool::POLICE_DEPARTMENT_COLOR
       end
 
-      def update
+      def label
+        "Police Dept."
       end
     end
   end
