@@ -31,7 +31,7 @@ module CitySim
           end
         end
 
-        element.align_with_neighbors if element.is_a?(RoadRoute)
+        element.align_with_neighbors if element.is_a?(Route)
         @map.charge(cost)
       end
 

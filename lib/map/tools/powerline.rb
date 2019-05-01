@@ -9,6 +9,12 @@ module CitySim
         :route
       end
 
+      def use(x, y, element)
+        super
+
+        element.align_with_neighbors
+      end
+
       def color
         Tool::POWERLINE_COLOR
       end
