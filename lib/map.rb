@@ -10,7 +10,7 @@ module CitySim
 
       @money = 30_000
       @citizens = []
-      @scroll_speed = 200
+      @scroll_speed = 400
 
       @tool = nil
       @grid = {}
@@ -81,11 +81,7 @@ module CitySim
 
       if @drag_start
         new_pos = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y)
-        offset = new_pos - @drag_start
-        offset.x = normalize(offset.x) * @tile_size
-        offset.y = normalize(offset.y) * @tile_size
-
-        @offset = offset
+        @offset = new_pos - @drag_start
       else
 
         direction = CyberarmEngine::Vector.new
