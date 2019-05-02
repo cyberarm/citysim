@@ -1,12 +1,18 @@
 module CitySim
   class Map
     class GameTime
+      Timer = Struct.new(:repeats, :freq, :last_time, :action)
+
       attr_reader :start_time
-      def initialize
+      def initialize(map)
+        @map = map
+
         @time = (Time.parse("#{Time.now.year}-01-01 00:00:00").to_f * 1000)
         @start_time = @time
 
-        @base_unit = 1.0
+        @timers = []
+
+        @base_unit = 10.0
       end
 
       def base_time
@@ -14,11 +20,11 @@ module CitySim
       end
 
       def second
-        base_time.strftime("%S")
+        base_time.sec
       end
 
       def minute
-        base_time.strftime("%M")
+        base_time.min
       end
 
       def hour
@@ -38,14 +44,42 @@ module CitySim
       end
 
       def time
-        # "#{hour}:#{minute}:#{second} #{day}/#{month}/#{year}"
+        @time
+      end
+
+      def current_time
         base_time.strftime("%Y-%m-%d %H:%M:%S")
       end
 
       def step(delta)
-        @time += delta * 1000.0
+        @time += (delta * 1000.0) * @base_unit
 
-        # fire time passage event
+        # TODO: fire time passage event
+        # fire_events
+        # TODO: process timers
+        check_timers
+      end
+
+      def check_timers
+        @timers.each do |timer|
+          if ((@time - timer.last_time) / @base_unit) > timer.freq
+            timer.action.call
+
+            unless timer.repeats
+              @timers.delete(timer)
+            else
+              timer.last_time = @time
+            end
+          end
+        end
+      end
+
+      def every(ms, &block)
+        @timers << Timer.new(true, ms, @time, block)
+      end
+
+      def after(seconds, &block)
+        @timers << Timer.new(false, ms, @time, block)
       end
     end
   end

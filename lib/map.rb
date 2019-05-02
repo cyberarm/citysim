@@ -12,7 +12,7 @@ module CitySim
       @citizens = []
       @scroll_speed = 400
 
-      @time = GameTime.new
+      @time = GameTime.new(self)
 
       @tool = nil
       @grid = {}
@@ -121,7 +121,7 @@ module CitySim
     end
 
     def current_time
-      @time.time
+      @time.current_time
     end
 
     def button_down(id)
