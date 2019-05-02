@@ -1,6 +1,6 @@
 module CitySim
   class Map
-    class Route < Zone
+    class Route < Element
       def draw
         @image.draw_rot(
           @position.x * @tile_size + @tile_size/2,
@@ -13,12 +13,24 @@ module CitySim
         [self.class]
       end
 
-      def align_with_neighbors(mutate = true)
-        list = @map.neighbors(self, :four_way, Route)
+      def mutate_neighbors(list)
+        list.values.each do |t|
+          if defined?(t.element.align_with_neighbors)
+            t.element.align_with_neighbors(false)
+         end
+        end
+      end
 
+      def align_with_neighbors(mutate = true)
         mode = []
-        list.each do |side, tile|
-          mode << side if tile && connects_with.include?(tile.element.class)
+        list = {}
+
+        connects_with.each do |klass|
+          l = @map.neighbors(self, :four_way, klass)
+          l.each do |side, tile|
+            mode << side if tile
+            list[side] = tile
+          end
         end
 
         # FIXME: Stop my eyes from bleeding -_-
@@ -28,52 +40,52 @@ module CitySim
           when :left
             @image = @sprites[:straight]
             @angle = 90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           when :right
             @image = @sprites[:straight]
             @angle = 90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           when :up
             @image = @sprites[:straight]
             @angle = 0
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           when :down
             @image = @sprites[:straight]
             @angle = 0
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           end
 
         when 2
           if mode.include?(:left) && mode.include?(:right)
             @image = @sprites[:straight]
             @angle = 90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:down) && mode.include?(:up)
             @image = @sprites[:straight]
             @angle = 0
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           # CURVES
           elsif mode.include?(:left) && mode.include?(:up)
             @image = @sprites[:curve]
             @angle = 180
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:right) && mode.include?(:up)
             @image = @sprites[:curve]
             @angle = -90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:left) && mode.include?(:down)
             @image = @sprites[:curve]
             @angle = 90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:right) && mode.include?(:down)
             @image = @sprites[:curve]
             @angle = 0
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           else
             raise "RoadTool: 2-way: #{list.keys}"
           end
@@ -82,22 +94,22 @@ module CitySim
           if mode.include?(:left) && mode.include?(:up) && mode.include?(:down)
             @image = @sprites[:t_intersection]
             @angle = 90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:right) && mode.include?(:up) && mode.include?(:down)
             @image = @sprites[:t_intersection]
             @angle = -90
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:left) && mode.include?(:right) && mode.include?(:down)
             @image = @sprites[:t_intersection]
             @angle = 0
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
 
           elsif mode.include?(:left) && mode.include?(:right) && mode.include?(:up)
             @image = @sprites[:t_intersection]
             @angle = 180
-            list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+            mutate_neighbors(list) if mutate
           else
             raise "RoadTool: 3-way: #{list.keys}"
           end
@@ -105,7 +117,7 @@ module CitySim
         when 4
           @image = @sprites[:four_way_intersection]
           @angle = 0
-          list.values.each {|t| t.element.align_with_neighbors(false)} if mutate
+          mutate_neighbors(list) if mutate
         end
       end
     end

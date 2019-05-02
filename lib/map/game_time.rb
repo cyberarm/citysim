@@ -78,7 +78,7 @@ module CitySim
         @timers << Timer.new(true, ms, @time, block)
       end
 
-      def after(seconds, &block)
+      def after(ms, &block)
         @timers << Timer.new(false, ms, @time, block)
       end
     end

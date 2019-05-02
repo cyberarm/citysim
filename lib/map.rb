@@ -228,7 +228,7 @@ module CitySim
       end
     end
 
-    def neighbors(element, search = :eight_way, limit = Zone)
+    def neighbors(element, search = :eight_way, limit = self.class)
       # :four_way - Get all elements along edges
       # :eight_way - Get all elements bordering element
 

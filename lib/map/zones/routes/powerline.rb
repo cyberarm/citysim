@@ -13,7 +13,7 @@ module CitySim
       end
 
       def connects_with
-        [self.class, RoadRoute]
+        [self.class, Zone]
       end
 
       def color

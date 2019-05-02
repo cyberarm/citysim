@@ -12,6 +12,10 @@ module CitySim
           @image.draw(tile.position.x * @map.tile_size, tile.position.y * @map.tile_size, 0)
         end
       end
+
+      def label
+        "Solar Power Plant"
+      end
     end
   end
 end
