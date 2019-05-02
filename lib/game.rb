@@ -72,12 +72,14 @@ module CitySim
 
         stack(margin: 5) do
           label "Game FPS"
-          @fps_label = label "#{Gosu.fps}"
+          @fps_label = label "#{Gosu.fps}", text_size: 22
 
+          label "Time"
+          @time_label = label @map.current_time, text_size: 22
           label "Money"
-          @money_label = label format_money(@map.money)
+          @money_label = label format_money(@map.money), text_size: 22
           label "Citizens"
-          @citizens_label = label @map.citizens.size.to_s
+          @citizens_label = label @map.citizens.size.to_s, text_size: 22
         end
       end
     end
@@ -116,6 +118,7 @@ module CitySim
       @fps_label.value = "#{Gosu.fps}"
       @money_label.value = format_money(@map.money)
       @citizens_label.value = @map.citizens.size.to_s
+      @time_label.value = @map.current_time
 
       @root_container.recalculate if @active_width != window.width || @active_height != window.height
 

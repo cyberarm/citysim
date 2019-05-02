@@ -12,6 +12,8 @@ module CitySim
       @citizens = []
       @scroll_speed = 400
 
+      @time = GameTime.new
+
       @tool = nil
       @grid = {}
       @elements = []
@@ -107,6 +109,7 @@ module CitySim
       end
 
       @money += income
+      @time.step(window.dt)
     end
 
     def tool
@@ -115,6 +118,10 @@ module CitySim
 
     def income
       @income - @outcome
+    end
+
+    def current_time
+      @time.time
     end
 
     def button_down(id)

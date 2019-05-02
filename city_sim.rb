@@ -4,8 +4,11 @@ rescue LoadError
   require "cyberarm_engine"
 end
 
+require "time"
+
 require_relative "lib/map"
 require_relative "lib/map/tile"
+require_relative "lib/map/game_time"
 require_relative "lib/map/zone"
 require_relative "lib/map/zones/residential"
 require_relative "lib/map/zones/commercial"
