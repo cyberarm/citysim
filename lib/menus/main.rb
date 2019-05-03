@@ -4,7 +4,8 @@ module CitySim
       def setup
         label "CitySim", text_size: 58
 
-        button("Play") { push_state(CitySim::Game) }
+        button("New Game") { push_state(CitySim::Game) }
+        button("Load Game") { push_state(CitySim::Game.new(savefile: Dir.glob("data/*.save").first)) }
         button("Exit") { $window.close }
 
         flow(margin_top: 10) do

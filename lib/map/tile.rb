@@ -45,6 +45,17 @@ module CitySim
       def available?
         !@zone && !@route
       end
+
+      def dump
+        {
+          position: @position.to_h,
+          type: @type,
+          color: @color.to_hex
+        }
+      end
+
+      def load
+      end
     end
   end
 end

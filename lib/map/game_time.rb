@@ -4,10 +4,10 @@ module CitySim
       Timer = Struct.new(:repeats, :freq, :last_time, :action)
 
       attr_reader :start_time
-      def initialize(map)
+      def initialize(map, time = Time.parse("#{Time.now.year}-01-01 00:00:00").to_f * 1000)
         @map = map
 
-        @time = (Time.parse("#{Time.now.year}-01-01 00:00:00").to_f * 1000)
+        @time = time
         @start_time = @time
 
         @timers = []

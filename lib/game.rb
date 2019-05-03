@@ -5,8 +5,11 @@ module CitySim
       @active_width  = window.width
       @active_height = window.height
 
-      @map = CitySim::Map.new(game: self)
-      Map::Tool.tools(@map) # setup tools
+      @map = CitySim::Map.new(game: self, savefile: @options[:savefile])
+
+      at_exit do
+        @map.save_level
+      end
 
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
@@ -79,7 +82,7 @@ module CitySim
           label "Money"
           @money_label = label format_money(@map.money), text_size: 22
           label "Citizens"
-          @citizens_label = label @map.citizens.size.to_s, text_size: 22
+          @citizens_label = label 0, text_size: 22
         end
       end
     end
@@ -117,7 +120,7 @@ module CitySim
 
       @fps_label.value = "#{Gosu.fps}"
       @money_label.value = format_money(@map.money)
-      @citizens_label.value = @map.citizens.size.to_s
+      # @citizens_label.value = @map.citizens.size.to_s
       @time_label.value = @map.current_time
 
       @root_container.recalculate if @active_width != window.width || @active_height != window.height

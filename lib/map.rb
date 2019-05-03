@@ -2,21 +2,26 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    attr_reader :money, :citizens, :elements, :tile_size, :grid
-    def initialize(game:, rows: 33, columns: 33, tile_size: 64)
+    attr_reader :money, :elements, :tile_size, :grid
+    def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
+      Map::Tool.tools(self) # setup tools
+
       @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size
 
+      @level = Store::Level.new(self, savefile)
+
       @money = 30_000
-      @citizens = []
       @scroll_speed = 400
 
-      @time = GameTime.new(self)
+      @game_time = GameTime.new(self)
 
       @tool = nil
       @grid = {}
+      @tiles = []
       @elements = []
+      @agents = []
 
       @drag_start = nil
       @drag_speed = 0.1
@@ -27,6 +32,12 @@ module CitySim
 
       generate_map
       position_map
+
+      load_level if savefile
+    end
+
+    def store
+      @level
     end
 
     def generate_map
@@ -34,7 +45,9 @@ module CitySim
         @rows.times do |x|
           @grid[x] ||= {}
           # @grid[x][y] = Tile.new(type: Tile::WATER, color: vary_color(Tile::WATER_COLOR))
-          @grid[x][y] = Tile.new(position: CyberarmEngine::Vector.new(x, y), type: Tile::LAND, color: vary_color(Tile::LAND_COLOR))
+          tile = Tile.new(position: CyberarmEngine::Vector.new(x, y), type: Tile::LAND, color: vary_color(Tile::LAND_COLOR))
+          @tiles << tile
+          @grid[x][y] = tile
         end
       end
     end
@@ -43,6 +56,57 @@ module CitySim
     def position_map
       @offset.x = normalize(window.width/2  - width/2)  * @tile_size
       @offset.y = normalize(window.height/2 - height/2) * @tile_size
+    end
+
+    def load_level
+      @money     = store[:Map_money]
+      @rows      = store[:Map_rows]
+      @columns   = store[:Map_columns]
+      @tile_size = store[:Map_tile_size]
+      @game_time = GameTime.new(self, store[:Map_time])
+
+      @tiles.clear
+      store[:Map_tiles].each do |tile|
+        x, y = tile[:position][:x], tile[:position][:y]
+
+        _tile = Tile.new(
+          position: CyberarmEngine::Vector.new(x, y),
+          type: tile[:type],
+          color: Gosu::Color.new(tile[:color].to_i(16))
+        )
+
+        @grid[x][y] = _tile
+        @tiles << _tile
+      end
+
+      @elements.clear
+      store[:Map_elements].each do |element|
+        @tool = element[:type].to_sym
+
+        if _element = use_tool(true, element[:position][:x], element[:position][:y])
+          _element.load(element)
+        else
+          raise "Failed to load element[:#{element[:type]}]"
+        end
+      end
+      @tool = nil
+
+      @agents.clear
+      store[:Map_agents].each do |agent|
+      end
+    end
+
+    def save_level
+      store[:Map_money] = @money
+      store[:Map_rows] = @rows
+      store[:Map_columns] = @columns
+      store[:Map_tile_size] = @tile_size
+      store[:Map_time] = @game_time.time
+
+      store[:Map_elements] = @elements.map(&:dump)
+      store[:Map_agents] = @agents.map(&:dump)
+      store[:Map_tiles] = @tiles.map(&:dump)
+      @level.save
     end
 
     def grid_each(&block)
@@ -109,7 +173,7 @@ module CitySim
       end
 
       @money += income
-      @time.step(window.dt)
+      @game_time.step(window.dt)
     end
 
     def tool
@@ -121,7 +185,7 @@ module CitySim
     end
 
     def current_time
-      @time.current_time
+      @game_time.current_time
     end
 
     def button_down(id)
@@ -154,24 +218,26 @@ module CitySim
       normalize(window.mouse_y - @offset.y)
     end
 
-    def use_tool
-      return unless active_tile
+    def use_tool(unbound = false, x = grid_x, y = grid_y)
+      return false unless unbound || active_tile
 
       tool = Map::Tool.tools.dig(@tool)
-      return unless tool
-      return unless @money >= tool.cost
+      return false unless tool
+      return false unless @money >= tool.cost
 
-      return unless tool.can_use?(grid_x, grid_y)
+      return false unless tool.can_use?(x, y)
       element = nil
 
       unless tool.type == :demolition
-        element = create_element(tool.places, CyberarmEngine::Vector.new(grid_x, grid_y))
+        element = create_element(tool.places, CyberarmEngine::Vector.new(x, y))
         @elements << element
       end
 
-      charge(tool.cost)
+      charge(tool.cost) unless unbound
 
-      tool.use(grid_x, grid_y, element)
+      tool.use(x, y, element)
+
+      return element
     end
 
     def create_element(places, position)

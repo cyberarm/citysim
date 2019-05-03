@@ -87,6 +87,17 @@ module CitySim
         size_bb = bb_max - bb_min
         @font.x, @font.y = bb_max.x - size_bb.x / 2 - @font.width / 2, bb_max.y - size_bb.y / 2 - @font.height / 2
       end
+
+      def dump
+        {
+          type: @type,
+          position: @position.to_h,
+
+        }
+      end
+
+      def load(hash)
+      end
     end
   end
 end

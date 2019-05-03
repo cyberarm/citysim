@@ -5,11 +5,18 @@ rescue LoadError
 end
 
 require "time"
+require "json"
+
+require_relative "lib/ext/gosu_color"
 
 require_relative "lib/map"
 require_relative "lib/map/tile"
 require_relative "lib/map/game_time"
 require_relative "lib/map/element"
+
+require_relative "lib/map/store/load"
+require_relative "lib/map/store/save"
+require_relative "lib/map/store/level"
 
 require_relative "lib/map/zone"
 require_relative "lib/map/zones/residential"
