@@ -52,6 +52,8 @@ require_relative "lib/map/agents/power"
 # require_relative "lib/map/agents/vehicle"
 
 require_relative "lib/menus/main"
+require_relative "lib/menus/new_game"
+require_relative "lib/menus/load_game"
 require_relative "lib/game"
 require_relative "lib/window"
 

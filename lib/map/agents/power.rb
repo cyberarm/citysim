@@ -1,8 +1,6 @@
 module CitySim
   class Map
-    class Agent
-      class Power < Agent
-      end
+    class PowerAgent < Agent
     end
   end
 end
