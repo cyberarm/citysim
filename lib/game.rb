@@ -7,10 +7,7 @@ module CitySim
 
       @map = CitySim::Map.new(game: self, savefile: @options[:savefile])
 
-      at_exit do
-        @map.save_level
-      end
-
+      # TODO: Implement a styling system
       CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
       CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
       CyberarmEngine::Theme::THEME[:Button][:background] = Gosu::Color.rgb(100, 100, 200)

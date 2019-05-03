@@ -199,7 +199,7 @@ module CitySim
       when Gosu::MsMiddle
         @drag_start = nil
       when Gosu::KbEscape
-        # pause_menu unless @tool
+        @game.push_state(Menus::PauseGame.new(map: self)) unless @tool
         @tool = nil if @tool
       end
     end
