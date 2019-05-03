@@ -11,6 +11,7 @@ module CitySim
         end
 
         button "Options" do
+          # push_state(OptionsMenu)
         end
 
         button "Save and Quit" do
@@ -27,9 +28,15 @@ module CitySim
           previous_state.draw
           Gosu.flush
 
-          Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgba(50, 50, 50, 150))
+          Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgba(50, 50, 50, 200))
 
           super
+        end
+
+        def button_up(id)
+          super(id)
+
+          push_state(previous_state) if id == Gosu::KbEscape
         end
       end
     end

@@ -85,6 +85,7 @@ module CitySim
 
         if _element = use_tool(true, element[:position][:x], element[:position][:y])
           _element.load(element)
+          _element.align_with_neighbors if _element.respond_to?(:align_with_neighbors)
         else
           raise "Failed to load element[:#{element[:type]}]"
         end
@@ -103,10 +104,19 @@ module CitySim
       store[:Map_tile_size] = @tile_size
       store[:Map_time] = @game_time.time
 
-      store[:Map_elements] = @elements.map(&:dump)
+      store[:Map_elements] = sorted_elements.map(&:dump)
       store[:Map_agents] = @agents.map(&:dump)
       store[:Map_tiles] = @tiles.map(&:dump)
       @level.save
+    end
+
+    # returns list of Elements with Zones befroe Routes
+    def sorted_elements
+      list = []
+      list << @elements.select {|e| e.is_a?(Zone)}
+      list << @elements.select {|e| e.is_a?(Route)}
+
+      list.flatten
     end
 
     def grid_each(&block)
@@ -223,7 +233,7 @@ module CitySim
 
       tool = Map::Tool.tools.dig(@tool)
       return false unless tool
-      return false unless @money >= tool.cost
+      return false unless unbound || @money >= tool.cost
 
       return false unless tool.can_use?(x, y)
       element = nil
