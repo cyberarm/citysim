@@ -7,6 +7,7 @@ module CitySim
         def initialize(map, savefile)
           @map = map
           @savefile = savefile
+          @savefile ||= map.city_name
           @savefile ||= "data/unnamed_#{Time.now.strftime("%Y-%M-%d_%s")}.save"
 
           @store = Hash.new

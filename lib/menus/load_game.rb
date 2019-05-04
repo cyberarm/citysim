@@ -9,6 +9,8 @@ module CitySim
           push_state(previous_state)
         end
 
+        label "Saves", margin_top: 15
+
         Dir.glob("data/*.save").each do |name|
           button(File.basename(name, '.save')) { push_state(CitySim::Game.new(savefile: name)) }
         end

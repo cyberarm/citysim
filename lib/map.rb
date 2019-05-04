@@ -2,13 +2,14 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    attr_reader :money, :elements, :tile_size, :grid
+    attr_reader :money, :elements, :tile_size, :grid, :city_name
     def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
       Map::Tool.tools(self) # setup tools
 
       @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size
+      @city_name = @game.options[:map_name]
 
       @level = Store::Level.new(self, savefile)
 
@@ -59,6 +60,7 @@ module CitySim
     end
 
     def load_level
+      @city_name = store[:Map_city_name]
       @money     = store[:Map_money]
       @rows      = store[:Map_rows]
       @columns   = store[:Map_columns]
@@ -98,6 +100,7 @@ module CitySim
     end
 
     def save_level
+      store[:Map_city_name] = @city_name
       store[:Map_money] = @money
       store[:Map_rows] = @rows
       store[:Map_columns] = @columns

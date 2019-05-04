@@ -71,6 +71,8 @@ module CitySim
         background Gosu::Color.rgba(125,125,150, 200)
 
         stack(margin: 5) do
+          label "#{@map.city_name}", color: Gosu::Color.rgb(45, 200, 80)
+
           label "Game FPS"
           @fps_label = label "#{Gosu.fps}", text_size: 22
 
