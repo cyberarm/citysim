@@ -10,6 +10,7 @@ module CitySim
         }
         @image = @sprites[:straight]
         @angle = 0
+        @position.z = 1
       end
 
       def connects_with

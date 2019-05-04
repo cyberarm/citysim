@@ -5,7 +5,7 @@ module CitySim
         @image.draw_rot(
           @position.x * @tile_size + @tile_size/2,
           @position.y * @tile_size + @tile_size/2,
-          0, @angle
+          @position.z, @angle
         )
       end
 
