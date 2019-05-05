@@ -49,6 +49,9 @@ require_relative "lib/map/tools/police_department"
 require_relative "lib/map/tools/city_park"
 require_relative "lib/map/tools/demolish"
 
+require_relative "lib/map/pathfinding"
+require_relative "lib/map/pathfinding/pathfinder"
+
 require_relative "lib/map/agent"
 require_relative "lib/map/agents/power"
 # require_relative "lib/map/agents/vehicle"
