@@ -2,6 +2,7 @@ module CitySim
   class Map
     class PowerPlantCoalZone < PowerPlantZone
       def setup
+        super
         @image = get_image("assets/powerplants/powerplant_coal.png")
       end
 

@@ -54,7 +54,7 @@ require_relative "lib/map/pathfinding/pathfinder"
 
 require_relative "lib/map/agent"
 require_relative "lib/map/agents/power"
-# require_relative "lib/map/agents/vehicle"
+require_relative "lib/map/agents/vehicle"
 
 require_relative "lib/menus/main"
 require_relative "lib/menus/new_game"

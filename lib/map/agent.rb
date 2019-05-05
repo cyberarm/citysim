@@ -1,12 +1,12 @@
 module CitySim
   class Map
     class Agent
+      include CyberarmEngine::Common
       include Pathfinding
       attr_reader :position
-      def initialize(map:, position:, &block)
+      def initialize(map:, position:)
         @map = map
         @position = position
-        @block = block
 
         setup
       end
@@ -14,9 +14,9 @@ module CitySim
       def setup
       end
 
-      def goal=(element)
+      def set_goal(element)
         @goal = element
-        find_path(@goal)
+        find_path(@position, @goal)
       end
 
       def draw
@@ -28,6 +28,12 @@ module CitySim
         else
           # do a thing
         end
+      end
+
+      def at_goal?
+      end
+
+      def move_towards_goal
       end
 
       def dump

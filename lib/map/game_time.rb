@@ -9,6 +9,7 @@ module CitySim
 
         @time = time
         @start_time = @time
+        @last_time  = @time
 
         @timers = []
 
@@ -52,6 +53,7 @@ module CitySim
       end
 
       def step(delta)
+        @last_time = @time
         @time += (delta * 1000.0) * @base_unit
 
         # TODO: fire time passage event
@@ -80,6 +82,10 @@ module CitySim
 
       def after(ms, &block)
         @timers << Timer.new(false, ms, @time, block)
+      end
+
+      def delta
+        (@time - @last_time).to_f / 1000.0
       end
     end
   end

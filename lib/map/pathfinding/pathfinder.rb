@@ -3,6 +3,7 @@ module CitySim
     module Pathfinding
       class Pathfinder
         Node = Struct.new(:tile, :parent, :distance, :cost)
+        attr_reader :path
         def initialize(map, source, goal, travels_along = Route, allow_diagonal = false)
           @map = map
           @source = source
@@ -23,6 +24,10 @@ module CitySim
           @max_depth = Float::INFINITY
           @seeking = true
 
+          @current_node = add_node create_node(source.x, source.y)
+          @current_node.distance = 0
+          @current_node.cost = 0
+
           find
         end
 
@@ -32,14 +37,42 @@ module CitySim
           end
         end
 
+        def at_goal?
+          @current_node.tile.position.distance(@goal.position) < 1.1
+        end
+
         def seek
-          unless @current_node && reached_goal?
+          unless @current_node && @map.grid.dig(@goal.position.x, @goal.position.y)
             @seeking = false
             return
           end
 
-          @visited[x][y] = true
+          @visited[@current_node.tile.position.x][@current_node.tile.position.y] = true
 
+          if at_goal?
+            until(@current_node.parent.nil?)
+              @path << @current_node
+              @current_node = @current_node.parent
+            end
+            @path.reverse!
+
+            @seeking = false
+            # puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created."
+            return
+          end
+
+          #LEFT
+          add_node create_node(@current_node.tile.position.x - 1, @current_node.tile.position.y, @current_node)
+          # RIGHT
+          add_node create_node(@current_node.tile.position.x + 1, @current_node.tile.position.y, @current_node)
+          # UP
+          add_node create_node(@current_node.tile.position.x, @current_node.tile.position.y - 1, @current_node)
+          # DOWN
+          add_node create_node(@current_node.tile.position.x, @current_node.tile.position.y + 1, @current_node)
+
+          # TODO: Add diagonal nodes, if requested
+
+          @last_size = @nodes.size
           @current_node = next_node
           @depth += 1
         end
@@ -50,15 +83,20 @@ module CitySim
 
         def add_node(node)
           return unless node
-          return if node_visited?(node)
 
           @nodes << node
           return node
         end
 
         def create_node(x, y, parent = nil)
+          return unless tile = @map.grid.dig(x, y)
+          # p @travels_along
+          # return unless tile.element.is_a?(@travels_along) # Enabling this causes infinite loops...
+          return if @visited.dig(x, y)
+          return if @nodes.detect {|node| node.tile.position.x == x && node.tile.position.y == y}
+
           node = Node.new
-          node.tile = @map.grid[x][y]
+          node.tile = tile
           node.parent = parent
           node.distance = parent.distance + 1 if parent
           node.cost = 0

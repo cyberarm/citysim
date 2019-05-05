@@ -2,13 +2,14 @@ module CitySim
   class Map
     include CyberarmEngine::Common
 
-    attr_reader :money, :elements, :tile_size, :grid, :city_name
+    attr_reader :money, :tiles, :elements, :agents, :tile_size, :half_tile_size, :grid, :city_name
     def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
       Map::Tool.tools(self) # setup tools
 
       @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size
+      @half_tile_size = @tile_size / 2
       @city_name = @game.options[:map_name]
 
       @level = Store::Level.new(self, savefile)
@@ -149,6 +150,7 @@ module CitySim
         end
 
         @elements.each(&:draw)
+        @agents.each(&:draw)
 
         tool.draw if tool
       end
@@ -187,6 +189,11 @@ module CitySim
 
       @money += income
       @game_time.step(window.dt)
+    end
+
+    def simulate
+      @elements.each(&:update)
+      @agents.each(&:update)
     end
 
     def tool
@@ -301,12 +308,6 @@ module CitySim
       )
     end
 
-    def simulate
-      @elements.each do |e|
-        e.update
-      end
-    end
-
     def neighbors(element, search = :eight_way, limit = self.class)
       # :four_way - Get all elements along edges
       # :eight_way - Get all elements bordering element
@@ -330,6 +331,37 @@ module CitySim
         end
       else
         # search edges and return an Array for each side
+        list[:left], list[:right], list[:up], list[:down] = [], [], [], []
+        # LEFT SIDE
+        _x = normalize(element.box.min.x) - 1
+        _y = normalize(element.box.min.y)
+        @columns.times do |y|
+          list[:left] << search(_x, _y + y, limit) if search(_x, _y + y, limit)
+        end
+
+        # RIGHT SIDE
+        _x = normalize(element.box.max.x)
+        _y = normalize(element.box.min.y)
+        @columns.times do |y|
+          list[:right] << search(_x, _y + y, limit) if search(_x, _y + y, limit)
+        end
+
+        # UP SIDE
+        _x = normalize(element.box.min.x)
+        _y = normalize(element.box.min.y - 1)
+        @rows.times do |x|
+          list[:left] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
+        end
+
+        # DOWN SIDE
+        _x = normalize(element.box.min.x)
+        _y = normalize(element.box.max.y)
+        @rows.times do |x|
+          list[:right] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
+        end
+
+        # p element.class
+        # p list.values.flatten.map{|v| v.element.class}
       end
 
       return list
@@ -342,6 +374,18 @@ module CitySim
       else
         nil
       end
+    end
+
+    def every(ms, &block)
+      @game_time.every(ms, &block)
+    end
+
+    def after(ms, &block)
+      @game_time.after(ms, &block)
+    end
+
+    def delta
+      @game_time.delta
     end
   end
 end

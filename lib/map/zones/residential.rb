@@ -4,6 +4,9 @@ module CitySim
     class ResidentialZone < Zone
       def setup
         @residents = 0
+        @map.every(1000) do
+          create_agent(VehicleAgent, nearest_route(RoadRoute))
+        end
       end
 
       def color

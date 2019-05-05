@@ -1,6 +1,13 @@
 module CitySim
   class Map
     class PowerPlantZone < Zone
+      def setup
+        @map.every(1000) do
+          route = nearest_route(PowerLineRoute)
+          create_agent(PowerAgent, route) if route
+        end
+      end
+
       def color
         Tool::POWERPLANT_COLOR
       end
