@@ -62,6 +62,11 @@ module CitySim
         )
 
         @font.draw
+
+        debug_draw if Setting.enabled?(:debug_mode)
+      end
+
+      def debug_draw
       end
 
       def update

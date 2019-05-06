@@ -3,13 +3,34 @@ module CitySim
     module Pathfinding
       class Pathfinder
         Node = Struct.new(:tile, :parent, :distance, :cost)
-        attr_reader :path
+        CACHE = {}
+
+        def self.cached_path(source, goal, travels_along)
+          found_path = CACHE.dig(travels_along, source, goal)
+          if found_path
+            found_path = nil unless found_path.valid?
+          end
+
+          return found_path
+        end
+
+        def self.cache_path(path)
+          CACHE[path.travels_along] ||= {}
+          CACHE[path.travels_along][path.source] ||= {}
+          CACHE[path.travels_along][path.source][path.goal] = path
+
+          return path
+        end
+
+        attr_reader :map, :source, :goal, :travels_along, :allow_diagonal
+        attr_reader :path, :age
         def initialize(map, source, goal, travels_along = Route, allow_diagonal = false)
           @map = map
           @source = source
           @goal = goal
           @travels_along = travels_along
           @allow_diagonal = allow_diagonal
+          @age = Gosu.milliseconds
 
           @created_nodes = 0
           @nodes = []
@@ -21,7 +42,7 @@ module CitySim
           end
 
           @depth = 0
-          @max_depth = (@map.rows * @map.columns) * 2
+          @max_depth = 64#(@map.rows * @map.columns) * 2
           @seeking = true
 
           @current_node = add_node create_node(source.x, source.y)
@@ -29,6 +50,21 @@ module CitySim
           @current_node.cost = 0
 
           find
+
+          Pathfinder.cache_path(self) if @path.size > 0 && Setting.enabled?(:cache_paths)
+        end
+
+        # Checks if Map still has all of paths required tiles
+        def valid?
+          valid = true
+          @path.each do |node|
+            unless @map.tiles.include?(node.tile)
+              valid = false
+              break
+            end
+          end
+
+          return valid
         end
 
         def find
@@ -36,7 +72,7 @@ module CitySim
             seek
           end
 
-          # puts "Failed to find path to #{@goal.class.ancestors.first} -> #{@goal.position.x}:#{@goal.position.y} from: #{@source.x}:#{@source.y}" if @depth >= @max_depth
+          puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if @depth >= @max_depth && Setting.enabled?(:debug_mode)
         end
 
         def at_goal?
@@ -59,7 +95,7 @@ module CitySim
             @path.reverse!
 
             @seeking = false
-            # puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created."
+            puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created. (#{@depth} deep)" if Setting.enabled?(:debug_mode)
             return
           end
 
@@ -74,7 +110,6 @@ module CitySim
 
           # TODO: Add diagonal nodes, if requested
 
-          @last_size = @nodes.size
           @current_node = next_node
           @depth += 1
         end

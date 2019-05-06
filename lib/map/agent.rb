@@ -27,6 +27,9 @@ module CitySim
       def draw
       end
 
+      def debug_draw
+      end
+
       def update
         unless at_goal?
           move_towards_goal

@@ -15,6 +15,8 @@ module CitySim
       @city_name = File.basename(@game.options[:map_name], ".*") if @game.options[:map_name]
 
       @level = Store::Level.new(self, savefile)
+      @rows = @game.options[:map_rows] if @game.options[:map_rows]
+      @columns = @game.options[:map_columns] if @game.options[:map_columns]
 
       @money = 30_000
       @scroll_speed = 400
@@ -35,9 +37,9 @@ module CitySim
       @outcome= 0
 
       generate_map
-      position_map
 
       load_level if savefile
+      position_map
     end
 
     def store
@@ -312,7 +314,7 @@ module CitySim
       )
     end
 
-    def neighbors(element, search = :eight_way, limit = self.class)
+    def neighbors(element, search = :eight_way, limit = Zone)
       # :four_way - Get all elements along edges
       # :eight_way - Get all elements bordering element
 
@@ -339,29 +341,29 @@ module CitySim
         # LEFT SIDE
         _x = normalize(element.box.min.x) - 1
         _y = normalize(element.box.min.y)
-        @columns.times do |y|
+        tool.columns.times do |y|
           list[:left] << search(_x, _y + y, limit) if search(_x, _y + y, limit)
         end
 
         # RIGHT SIDE
         _x = normalize(element.box.max.x)
         _y = normalize(element.box.min.y)
-        @columns.times do |y|
+        tool.columns.times do |y|
           list[:right] << search(_x, _y + y, limit) if search(_x, _y + y, limit)
         end
 
         # UP SIDE
         _x = normalize(element.box.min.x)
-        _y = normalize(element.box.min.y - 1)
-        @rows.times do |x|
-          list[:left] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
+        _y = normalize(element.box.min.y) - 1
+        tool.rows.times do |x|
+          list[:up] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
         end
 
         # DOWN SIDE
         _x = normalize(element.box.min.x)
         _y = normalize(element.box.max.y)
-        @rows.times do |x|
-          list[:right] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
+        tool.rows.times do |x|
+          list[:down] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
         end
       end
 

@@ -10,7 +10,8 @@ module CitySim
 
         self.type = :truck
         @path = @pathfinder.path
-        @current_node = @path.shift
+        @path_index = 0
+        @current_node = @path[@path_index]
       end
 
       def travels_along
@@ -22,7 +23,7 @@ module CitySim
       end
 
       def shift_path?
-        _position = CyberarmEngine::Vector.new(@position.x.floor, @position.y.floor)
+        _position = CyberarmEngine::Vector.new(@position.x, @position.y)
         d = @current_node.tile.position.distance(_position)
         d <= 0.1
       end
@@ -33,7 +34,10 @@ module CitySim
 
         @angle = Math.atan2(direction.y, direction.x).radians_to_gosu
 
-        @current_node = @path.shift if shift_path?
+        if shift_path?
+          @path_index  += 1
+          @current_node = @path[@path_index]
+        end
       end
 
       def choose_body_color
@@ -64,17 +68,17 @@ module CitySim
         return if at_goal?
         @image.draw_rot(@position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, 3, @angle)
 
-        # draw_debug
+        debug_draw if Setting.enabled?(:debug_mode)
       end
 
-      def draw_debug
+      def debug_draw
         Gosu.draw_line(
           @current_node.tile.position.x * @map.tile_size + @map.half_tile_size, @current_node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,
           @position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, @color, 3
         )
 
-        node = @path.first
-        @path.each do |path|
+        node = @path[@path_index]
+        @path[@path_index..@path.size - 1].each do |path|
           Gosu.draw_line(
             node.tile.position.x * @map.tile_size + @map.half_tile_size, node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,
             path.tile.position.x * @map.tile_size + @map.half_tile_size, path.tile.position.y * @map.tile_size + @map.half_tile_size, @color, 3
