@@ -4,9 +4,10 @@ module CitySim
       include CyberarmEngine::Common
       include Pathfinding
       attr_reader :position
-      def initialize(map:, position:)
+      def initialize(map:, position:, goal:)
         @map = map
         @position = position
+        set_goal(goal) if goal
 
         setup
       end

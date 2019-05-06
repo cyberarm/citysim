@@ -6,8 +6,9 @@ module CitySim
         @residents = 0
         @map.every(1000) do
           if route = nearest_route(RoadRoute)
-            if @map.elements.select {|e| e if e.is_a?(CommercialZone)}.size > 0
-              create_agent(VehicleAgent, route)# if rand(0.0..1.0) > 0.9
+            choice = @map.elements.select {|e| e if e.is_a?(CommercialZone)}.shuffle.detect {|c| c.nearest_route(RoadRoute) != nil}
+            if choice
+              create_agent(VehicleAgent, route, choice.nearest_route(RoadRoute))
             end
           end
         end

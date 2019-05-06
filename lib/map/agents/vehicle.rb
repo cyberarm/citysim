@@ -9,7 +9,6 @@ module CitySim
         @color = choose_body_color
 
         self.type = :truck
-        set_goal(@map.elements.select {|e| e if e.is_a?(CommercialZone)}.sample.nearest_route(RoadRoute))
         @path = @pathfinder.path
         @current_node = @path.shift
       end
@@ -25,7 +24,7 @@ module CitySim
       def shift_path?
         _position = CyberarmEngine::Vector.new(@position.x.floor, @position.y.floor)
         d = @current_node.tile.position.distance(_position)
-        d < @speed * @map.delta
+        d <= 0.1
       end
 
       def move_towards_goal
@@ -69,12 +68,12 @@ module CitySim
       end
 
       def draw_debug
-        node = @path.first
-          Gosu.draw_line(
-            @current_node.tile.position.x * @map.tile_size + @map.half_tile_size, @current_node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,
-            @position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, @color, 3
-          )
+        Gosu.draw_line(
+          @current_node.tile.position.x * @map.tile_size + @map.half_tile_size, @current_node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,
+          @position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, @color, 3
+        )
 
+        node = @path.first
         @path.each do |path|
           Gosu.draw_line(
             node.tile.position.x * @map.tile_size + @map.half_tile_size, node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,

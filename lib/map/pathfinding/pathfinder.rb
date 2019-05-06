@@ -21,7 +21,7 @@ module CitySim
           end
 
           @depth = 0
-          @max_depth = @map.rows > @map.columns ? @map.rows * 4 : @map.columns * 4
+          @max_depth = (@map.rows * @map.columns) * 2
           @seeking = true
 
           @current_node = add_node create_node(source.x, source.y)
