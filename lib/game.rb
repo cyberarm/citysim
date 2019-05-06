@@ -58,11 +58,20 @@ module CitySim
           end
         end
 
-        stack do
+        stack(padding_right: 10) do
           label "Other"
           flow do
             button("Demolish") { @map.tool = :other_demolish }
             button("No Tool") { @map.tool = nil }
+          end
+        end
+
+        stack do
+          label "Time"
+          flow do
+            button("1x") { @map.speed = 1.0 }
+            button("5x") { @map.speed = 5.0 }
+            button("10x") { @map.speed = 10.0 }
           end
         end
       end

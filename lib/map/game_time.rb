@@ -13,7 +13,10 @@ module CitySim
 
         @timers = []
 
-        @base_unit = 10.0
+        @delta_time = (1000.0 / 60.0) / 1000.0 # 16.6667ms
+        @accumulator = 0.0
+
+        @base_unit = 1.0
       end
 
       def base_time
@@ -52,6 +55,11 @@ module CitySim
         base_time.strftime("%Y-%m-%d %H:%M:%S")
       end
 
+      def speed=(n)
+        raise unless n.is_a?(Numeric)
+        @base_unit = n
+      end
+
       def step(delta)
         @last_time = @time
         @time += (delta * 1000.0) * @base_unit
@@ -84,8 +92,22 @@ module CitySim
         @timers << Timer.new(false, ms, @time, block)
       end
 
+      def timestep(&block)
+        simulation_time = (@time - @last_time).to_f / 1000.0
+        if simulation_time > 1.0
+          simulation_time = 1.0
+        end
+        @accumulator += simulation_time
+
+        while(@accumulator >= delta)
+          block.call
+
+          @accumulator -= delta
+        end
+      end
+
       def delta
-        (@time - @last_time).to_f / 1000.0
+        @delta_time
       end
     end
   end

@@ -3,6 +3,7 @@ module CitySim
     include CyberarmEngine::Common
 
     attr_reader :money, :tiles, :elements, :agents, :tile_size, :half_tile_size, :grid, :city_name
+    attr_reader :rows, :columns
     def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
       Map::Tool.tools(self) # setup tools
 
@@ -181,7 +182,9 @@ module CitySim
         @offset = offset
       end
 
-      simulate
+      @game_time.timestep do
+        simulate
+      end
 
       if !@game.mouse_over_menu? && @tool
         use_tool if Gosu.button_down?(Gosu::MsLeft)
@@ -359,9 +362,6 @@ module CitySim
         @rows.times do |x|
           list[:right] << search(_x + x, _y, limit) if search(_x + x, _y, limit)
         end
-
-        # p element.class
-        # p list.values.flatten.map{|v| v.element.class}
       end
 
       return list
@@ -384,8 +384,13 @@ module CitySim
       @game_time.after(ms, &block)
     end
 
+    # FIXED delta time for simulation
     def delta
       @game_time.delta
+    end
+
+    def speed=(n)
+      @game_time.speed=n
     end
   end
 end

@@ -9,7 +9,7 @@ module CitySim
         @color = choose_body_color
 
         self.type = :truck
-        set_goal(@map.elements.select {|e| e if e.is_a?(CommercialZone)}.sample)
+        set_goal(@map.elements.select {|e| e if e.is_a?(CommercialZone)}.sample.nearest_route(RoadRoute))
         @path = @pathfinder.path
         @current_node = @path.shift
       end
@@ -24,7 +24,8 @@ module CitySim
 
       def shift_path?
         _position = CyberarmEngine::Vector.new(@position.x.floor, @position.y.floor)
-        @current_node.tile.position == _position
+        d = @current_node.tile.position.distance(_position)
+        d < @speed * @map.delta
       end
 
       def move_towards_goal
@@ -71,7 +72,7 @@ module CitySim
         node = @path.first
           Gosu.draw_line(
             @current_node.tile.position.x * @map.tile_size + @map.half_tile_size, @current_node.tile.position.y * @map.tile_size + @map.half_tile_size, @color,
-            @position.x * @map.tile_size + @map.tile_size / 2, @position.y * @map.tile_size + @map.tile_size / 2, @color, 3
+            @position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, @color, 3
           )
 
         @path.each do |path|
@@ -82,6 +83,12 @@ module CitySim
 
           node = path
         end
+      end
+
+      def update
+        super
+
+        remove if at_goal?
       end
     end
   end

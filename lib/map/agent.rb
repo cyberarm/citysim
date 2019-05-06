@@ -19,6 +19,10 @@ module CitySim
         find_path(@position, @goal)
       end
 
+      def remove
+        @map.agents.delete(self)
+      end
+
       def draw
       end
 

@@ -26,7 +26,8 @@ module CitySim
           end
           button "Create" do
             if valid_options?
-              push_state(CitySim::Game.new(map_name: "data/#{@name.value}.save"))
+              window.text_input = nil
+              push_state(CitySim::Game.new(map_name: @name.value))
             end
           end
         end

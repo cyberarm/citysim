@@ -7,7 +7,7 @@ module CitySim
 
       def nearest_route(route)
         neighbors = @map.neighbors(self, :eight_way, route)
-        neighbors.values.flatten.map{|v| v.element}.sample
+        neighbors.values.flatten.select{|v| v.element.is_a?(route)}.sample
       end
     end
   end

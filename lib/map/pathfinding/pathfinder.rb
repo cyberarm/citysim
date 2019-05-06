@@ -21,7 +21,7 @@ module CitySim
           end
 
           @depth = 0
-          @max_depth = Float::INFINITY
+          @max_depth = @map.rows > @map.columns ? @map.rows * 4 : @map.columns * 4
           @seeking = true
 
           @current_node = add_node create_node(source.x, source.y)
@@ -35,6 +35,8 @@ module CitySim
           while(@seeking && @depth < @max_depth)
             seek
           end
+
+          # puts "Failed to find path to #{@goal.class.ancestors.first} -> #{@goal.position.x}:#{@goal.position.y} from: #{@source.x}:#{@source.y}" if @depth >= @max_depth
         end
 
         def at_goal?
@@ -90,8 +92,7 @@ module CitySim
 
         def create_node(x, y, parent = nil)
           return unless tile = @map.grid.dig(x, y)
-          # p @travels_along
-          # return unless tile.element.is_a?(@travels_along) # Enabling this causes infinite loops...
+          return unless tile.element.is_a?(@travels_along) # Enabling this causes infinite loops...
           return if @visited.dig(x, y)
           return if @nodes.detect {|node| node.tile.position.x == x && node.tile.position.y == y}
 
