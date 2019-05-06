@@ -5,6 +5,7 @@ module CitySim
     attr_reader :money, :tiles, :elements, :agents, :tile_size, :half_tile_size, :grid, :city_name
     attr_reader :rows, :columns
     def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
+      Map::Tool.reset
       Map::Tool.tools(self) # setup tools
 
       @game = game

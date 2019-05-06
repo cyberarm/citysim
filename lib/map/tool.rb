@@ -47,6 +47,10 @@ module CitySim
         @tools
       end
 
+      def self.reset
+        @tools = nil
+      end
+
       def self.inherited(subclass)
         @list ||= []
         @list << subclass
