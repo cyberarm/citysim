@@ -35,19 +35,20 @@ module CitySim
           @created_nodes = 0
           @nodes = []
           @path  = []
-          @tiles = @map.tiles.clone
+          @tiles = @map.tiles.select {|tile| tile.element.is_a?(travels_along)}
 
           @visited = Hash.new do |hash, value|
             hash[value] = Hash.new {|h, v| h[v] = false}
           end
 
           @depth = 0
-          @max_depth = 64#(@map.rows * @map.columns) * 2
+          @max_depth = @tiles.size
           @seeking = true
 
-          @current_node = add_node create_node(source.x, source.y)
+          @current_node = create_node(source.x, source.y)
           @current_node.distance = 0
           @current_node.cost = 0
+          add_node @current_node
 
           find
 
@@ -72,7 +73,9 @@ module CitySim
             seek
           end
 
-          puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if @depth >= @max_depth && Setting.enabled?(:debug_mode)
+          if @depth >= @max_depth
+            puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
+          end
         end
 
         def at_goal?
@@ -85,6 +88,7 @@ module CitySim
             return
           end
 
+          @nodes.delete(@current_node) # delete visited nodes
           @visited[@current_node.tile.position.x][@current_node.tile.position.y] = true
 
           if at_goal?
@@ -95,7 +99,7 @@ module CitySim
             @path.reverse!
 
             @seeking = false
-            puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created. (#{@depth} deep)" if Setting.enabled?(:debug_mode)
+            puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created. [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
             return
           end
 
