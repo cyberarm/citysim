@@ -1,7 +1,7 @@
 module CitySim
   class Map
     class GameTime
-      Timer = Struct.new(:repeats, :freq, :last_time, :action)
+      Timer = Struct.new(:repeats, :owner, :freq, :last_time, :action)
 
       attr_reader :start_time
       def initialize(map, time = Time.parse("#{Time.now.year}-01-01 00:00:00").to_f * 1000)
@@ -52,7 +52,7 @@ module CitySim
       end
 
       def current_time
-        base_time.strftime("%Y-%m-%d %H:%M:%S")
+        base_time
       end
 
       def speed=(n)
@@ -60,19 +60,30 @@ module CitySim
         @base_unit = n
       end
 
-      def step(delta)
+      def step(delta, &block)
         @last_time = @time
         @time += (delta * 1000.0) * @base_unit
 
         # TODO: fire time passage event
         # fire_events
         # TODO: process timers
-        check_timers
+        simulation_time = (@time - @last_time).to_f / 1000.0
+        if simulation_time > 1.0
+          simulation_time = 1.0
+        end
+        @accumulator += simulation_time
+
+        while(@accumulator >= delta)
+          block.call
+          check_timers
+
+          @accumulator -= delta
+        end
       end
 
       def check_timers
         @timers.each do |timer|
-          if ((@time - timer.last_time) / @base_unit) > timer.freq
+          if (@time - timer.last_time) >= timer.freq
             timer.action.call
 
             unless timer.repeats
@@ -84,26 +95,16 @@ module CitySim
         end
       end
 
-      def every(ms, &block)
-        @timers << Timer.new(true, ms, @time, block)
+      def every(owner, ms, &block)
+        @timers << Timer.new(true, owner, ms, @time, block)
       end
 
-      def after(ms, &block)
-        @timers << Timer.new(false, ms, @time, block)
+      def after(owner, ms, &block)
+        @timers << Timer.new(false, owner, ms, @time, block)
       end
 
-      def timestep(&block)
-        simulation_time = (@time - @last_time).to_f / 1000.0
-        if simulation_time > 1.0
-          simulation_time = 1.0
-        end
-        @accumulator += simulation_time
-
-        while(@accumulator >= delta)
-          block.call
-
-          @accumulator -= delta
-        end
+      def removed(element)
+        @timers.delete_if {|timer| timer.owner == element}
       end
 
       def delta

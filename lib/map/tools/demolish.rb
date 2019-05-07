@@ -31,6 +31,7 @@ module CitySim
           end
         end
 
+        @map.removed(element)
         element.align_with_neighbors if element.is_a?(Route)
         @map.charge(cost)
       end

@@ -9,6 +9,11 @@ module CitySim
         @color = choose_body_color
 
         self.type = :truck
+        @bounding_box = CyberarmEngine::BoundingBox.new(
+          @position - @image.width/2,
+          @position - @image.height/2,
+        )
+
         @path = @pathfinder.path
         @path_index = 0
         @current_node = @path[@path_index]
@@ -28,7 +33,13 @@ module CitySim
         d <= 0.1
       end
 
+      def can_move?
+        direction = (@current_node.tile.position - @position)
+        @position + direction.normalized * (@speed * @map.delta)
+      end
+
       def move_towards_goal
+        return unless can_move?
         direction = (@current_node.tile.position - @position)
         @position += direction.normalized * (@speed * @map.delta)
 

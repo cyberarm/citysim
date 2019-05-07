@@ -185,16 +185,14 @@ module CitySim
         @offset = offset
       end
 
-      @game_time.timestep do
-        simulate
-      end
-
       if !@game.mouse_over_menu? && @tool
         use_tool if Gosu.button_down?(Gosu::MsLeft)
       end
 
       @money += income
-      @game_time.step(window.dt)
+      @game_time.step(window.dt) do
+        simulate
+      end
     end
 
     def simulate
@@ -379,12 +377,16 @@ module CitySim
       end
     end
 
-    def every(ms, &block)
-      @game_time.every(ms, &block)
+    def every(owner, ms, &block)
+      @game_time.every(owner, ms, &block)
     end
 
-    def after(ms, &block)
-      @game_time.after(ms, &block)
+    def after(owner, ms, &block)
+      @game_time.after(owner, ms, &block)
+    end
+
+    def removed(element)
+      @game_time.removed(element)
     end
 
     # FIXED delta time for simulation

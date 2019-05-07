@@ -149,7 +149,7 @@ module CitySim
       @money_label.value = format_money(@map.money)
       # @citizens_label.value = @map.citizens.size.to_s
       @agents_label.value = @map.agents.size.to_s
-      @time_label.value = @map.current_time
+      @time_label.value = @map.current_time.strftime("%Y-%m-%d %H:%M:%S")
 
       @root_container.recalculate if @active_width != window.width || @active_height != window.height
 
