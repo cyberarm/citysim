@@ -59,7 +59,7 @@ module CitySim
         def valid?
           valid = true
           @path.each do |node|
-            unless @map.tiles.include?(node.tile)
+            unless @map.grid.dig(node.tile.position.x, node.tile.position.y).element == node.tile.element
               valid = false
               break
             end
