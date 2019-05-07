@@ -8,22 +8,32 @@ module CitySim
       @map = CitySim::Map.new(game: self, savefile: @options[:savefile])
 
       # TODO: Implement a styling system
-      CyberarmEngine::Theme::THEME[:Button][:text_size] = 22
-      CyberarmEngine::Theme::THEME[:Button][:border_thickness] = 1
-      CyberarmEngine::Theme::THEME[:Button][:background] = Gosu::Color.rgb(100, 100, 200)
-      CyberarmEngine::Theme::THEME[:Button][:border_color] = Gosu::Color.rgb(100, 100, 250)
+      theme = {}
+      theme[:Button] = {}
+      theme[:Button][:active] = {}
+      theme[:Button][:hover]  = {}
 
-      CyberarmEngine::Theme::THEME[:Button][:active][:color] = Gosu::Color.rgb(200, 200, 200)
-      CyberarmEngine::Theme::THEME[:Button][:active][:background] = Gosu::Color.rgb(75, 75, 175)
-      CyberarmEngine::Theme::THEME[:Button][:active][:border_color] = Gosu::Color.rgb(100, 100, 250)
+      theme[:Button][:text_size] = 23
+      theme[:Button][:border_thickness] = 1
+      theme[:Button][:margin] = 3
+      theme[:Button][:padding] = 4
+      theme[:Button][:background] = Gosu::Color.rgb(100, 100, 200)
+      theme[:Button][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      CyberarmEngine::Theme::THEME[:Button][:hover][:color] = Gosu::Color::WHITE
-      CyberarmEngine::Theme::THEME[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
-      CyberarmEngine::Theme::THEME[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
+      theme[:Button][:active][:color] = Gosu::Color.rgb(200, 200, 200)
+      theme[:Button][:active][:background] = Gosu::Color.rgb(75, 75, 175)
+      theme[:Button][:active][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      @toolbar = flow(padding: 5) do
+      theme[:Button][:hover][:color] = Gosu::Color::WHITE
+      theme[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
+      theme[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
+
+      CyberarmEngine::Theme::THEME.merge!(theme)
+      # @root_container.style(theme)
+
+      @toolbar = flow(padding: 5) do |f|
         background Gosu::Color.rgba(125,125,150, 200)
-        stack(margin_left: 5, padding_right: 10) do
+        stack(padding_top: 5, margin_right: 10) do |s|
           label "Zones"
           flow do
             button("Residential") { @map.tool = :zone_residential }
@@ -32,7 +42,7 @@ module CitySim
           end
         end
 
-        stack(padding_right: 10) do
+        stack(margin_right: 10) do
           label "Power"
           flow do
             button("Coal") { @map.tool = :powerplant_coal }
@@ -41,7 +51,7 @@ module CitySim
           end
         end
 
-        stack(padding_right: 10) do
+        stack(margin_right: 10) do
           label "Routes"
           flow do
             button("Road") { @map.tool = :route_road }
@@ -49,7 +59,7 @@ module CitySim
           end
         end
 
-        stack(padding_right: 10) do
+        stack(margin_right: 10) do
           label "Services"
           flow do
             button("Fire Department") { @map.tool = :service_fire_department }
@@ -58,7 +68,7 @@ module CitySim
           end
         end
 
-        stack(padding_right: 10) do
+        stack(margin_right: 10) do
           label "Other"
           flow do
             button("Demolish") { @map.tool = :other_demolish }
@@ -69,8 +79,8 @@ module CitySim
         stack do
           label "Time"
           flow do
-            button("1x") { @map.speed = 1.0 }
-            button("5x") { @map.speed = 5.0 }
+            button("1x")  { @map.speed = 1.0 }
+            button("5x")  { @map.speed = 5.0 }
             button("10x") { @map.speed = 10.0 }
           end
         end
@@ -80,7 +90,8 @@ module CitySim
         background Gosu::Color.rgba(125,125,150, 200)
 
         stack(margin: 5) do
-          label "#{@map.city_name}", color: Gosu::Color.rgb(45, 200, 80)
+          label "#{@map.city_name}", color: Gosu::Color::BLACK
+          label "", text_size: 18
 
           label "Game FPS"
           @fps_label = label "#{Gosu.fps}", text_size: 22
@@ -98,7 +109,13 @@ module CitySim
     end
 
     def format_money(int, currency = "$")
-      sprintf("#{currency}%.2f", int.to_f)
+      list = []
+      number = int.to_f.to_s.split(".")
+      number.first.reverse.chars.each_slice(3) {|slice| list << slice}
+
+      number[0] = list.map(&:join).join(",").reverse
+
+      "#{currency}#{number.first}.00"
     end
 
     def mouse_over_menu?
