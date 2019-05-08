@@ -4,7 +4,7 @@ module CitySim
     class ResidentialZone < Zone
       def setup
         @residents = 0
-        @map.every(self, 1000) do
+        @map.every(self, 10_000) do
           if route = nearest_route(RoadRoute)
             choice = @map.elements.select {|e| e if e.is_a?(CommercialZone)}.shuffle.detect {|c| c.nearest_route(RoadRoute) != nil}
             if choice

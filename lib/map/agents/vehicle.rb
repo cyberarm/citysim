@@ -4,7 +4,6 @@ module CitySim
       def setup
         @size = @map.tile_size
 
-        @speed = 1.0
         @angle = 0
         @color = choose_body_color
 
@@ -14,9 +13,22 @@ module CitySim
           @position - @image.height/2,
         )
 
+        @min_distance = 0.1
+
+        @max_speed = 1.0
+        @max_force = 1.0
+        @mass = 100.0
+
+        @velocity = CyberarmEngine::Vector.new
+        @seeking  = CyberarmEngine::Vector.new
+
         @path = @pathfinder.path
         @path_index = 0
         @current_node = @path[@path_index]
+        if @current_node
+          @seeking = @current_node.tile.position.clone
+          set_lane_offset
+        end
       end
 
       def travels_along
@@ -29,26 +41,54 @@ module CitySim
 
       def shift_path?
         _position = CyberarmEngine::Vector.new(@position.x, @position.y)
-        d = @current_node.tile.position.distance(_position)
-        d <= 0.1
+        d = @seeking.distance(_position)
+        d <= @min_distance
       end
 
       def can_move?
-        direction = (@current_node.tile.position - @position)
-        @position + direction.normalized * (@speed * @map.delta)
+        direction = (@seeking - @position)
+        @position + direction.normalized * (@velocity * @map.delta)
       end
 
       def move_towards_goal
         return unless can_move?
-        direction = (@current_node.tile.position - @position)
-        @position += direction.normalized * (@speed * @map.delta)
+        direction = (@seeking - @position)
+
+        @velocity = direction.normalized * @max_speed
+
+        @position += @velocity * @map.delta
 
         @angle = Math.atan2(direction.y, direction.x).radians_to_gosu
 
         if shift_path?
           @path_index  += 1
           @current_node = @path[@path_index]
+          @seeking = @current_node.tile.position.clone if @current_node
+          set_lane_offset if @current_node
         end
+      end
+
+      def set_lane_offset
+        lane_offset = CyberarmEngine::Vector.new
+        offset = 0.25
+
+        next_node = @path[@path_index+1]
+        if next_node
+          direction = (next_node.tile.position - @seeking).normalized
+          if direction.x < 0
+            lane_offset.y -= offset
+          elsif direction.x > 0
+            lane_offset.y += offset
+          end
+
+          if direction.y < 0
+            lane_offset.x += offset
+          elsif direction.y > 0
+            lane_offset.x -= offset
+          end
+        end
+
+        @seeking += lane_offset
       end
 
       def choose_body_color
