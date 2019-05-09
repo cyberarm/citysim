@@ -68,8 +68,8 @@ module CitySim
         # fire_events
         # TODO: process timers
         simulation_time = (@time - @last_time).to_f / 1000.0
-        if simulation_time > 1.0
-          simulation_time = 1.0
+        if simulation_time > 0.25
+          simulation_time = 0.25
         end
         @accumulator += simulation_time
 

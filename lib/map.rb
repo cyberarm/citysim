@@ -147,12 +147,15 @@ module CitySim
 
     def draw
       Gosu.translate(@offset.x, @offset.y) do
-        @columns.times do |y|
-          @rows.times do |x|
-            @grid[x][y].draw(@tile_size)
+        @map_tiles ||= Gosu.record(@rows * @tile_size, @columns * @tile_size) do
+          @columns.times do |y|
+            @rows.times do |x|
+              @grid[x][y].draw(@tile_size)
+            end
           end
         end
 
+        @map_tiles.draw(0, 0, -1)
         @elements.each(&:draw)
         @agents.each(&:draw)
 
