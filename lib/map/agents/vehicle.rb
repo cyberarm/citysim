@@ -1,6 +1,8 @@
 module CitySim
   class Map
     class VehicleAgent < Agent
+      @@cache = {}
+
       def setup
         @size = @map.tile_size
 
@@ -106,13 +108,24 @@ module CitySim
       def type=(type)
         @type = type
 
-        @body_image    = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_body.png")
-        @overlay_image = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_overlay.png")
+        @image = image_from_cache
+      end
 
-        @image = Gosu.render(@body_image.width, @body_image.height) do
-          @body_image.draw(0, 0, 0, 1, 1, @color)
-          @overlay_image.draw(0, 0, 1)
+      # cache assembled vehicle images
+      def image_from_cache
+        unless @@cache.dig(@type, @color)
+          @@cache[@type] ||= {}
+          body_image    = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_body.png")
+          overlay_image = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_overlay.png")
+
+          image = Gosu.render(body_image.width, body_image.height) do
+            body_image.draw(0, 0, 0, 1, 1, @color)
+            overlay_image.draw(0, 0, 1)
+          end
+          @@cache[@type][@color] = image
         end
+
+        return @@cache.dig(@type, @color)
       end
 
       def draw
