@@ -2,6 +2,8 @@ module CitySim
   class Map
     class RoadRoute < Route
       def setup
+        add_tag(:roadlike)
+
         @sprites = {
           curve:                 get_image("#{GAME_ROOT_PATH}/assets/roads/road_curve.png"),
           straight:              get_image("#{GAME_ROOT_PATH}/assets/roads/road_straight.png"),
@@ -10,6 +12,10 @@ module CitySim
         }
         @image = @sprites[:straight]
         @angle = 0
+      end
+
+      def connects_with
+        [:roadlike]
       end
 
       def color

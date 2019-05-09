@@ -1,6 +1,12 @@
 module CitySim
   class Map
     class Route < Element
+      def initialize(map, type, position)
+        add_tag(:routelike)
+
+        super
+      end
+
       def draw
         @image.draw_rot(
           @position.x * @tile_size + @tile_size/2,
@@ -10,7 +16,7 @@ module CitySim
       end
 
       def connects_with
-        [self.class]
+        [:routelike]
       end
 
       def mutate_neighbors(list)
@@ -25,8 +31,8 @@ module CitySim
         mode = []
         list = {}
 
-        connects_with.each do |klass|
-          l = @map.neighbors(self, :four_way, klass)
+        connects_with.each do |tag|
+          l = @map.neighbors(self, :four_way, tag)
           l.each do |side, tile|
             mode << side if tile
             list[side] = tile

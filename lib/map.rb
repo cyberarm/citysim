@@ -315,7 +315,7 @@ module CitySim
       )
     end
 
-    def neighbors(element, search = :eight_way, limit = Zone)
+    def neighbors(element, search = :eight_way, limit = :zonelike)
       # :four_way - Get all elements along edges
       # :eight_way - Get all elements bordering element
 
@@ -373,7 +373,7 @@ module CitySim
 
     def search(x, y, limit)
       tile = @grid.dig(x, y)
-      if tile && tile.element.is_a?(limit)
+      if tile && tile.element && tile.element.has_tag?(limit)
         tile
       else
         nil

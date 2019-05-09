@@ -2,6 +2,8 @@ module CitySim
   class Map
     class PowerLineRoute < Route
       def setup
+        add_tag(:powerlinelike)
+
         @sprites = {
           curve:                 get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_curve.png"),
           straight:              get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_straight.png"),
@@ -14,7 +16,7 @@ module CitySim
       end
 
       def connects_with
-        [self.class, Zone]
+        [:powerlinelike, :zonelike]
       end
 
       def color

@@ -10,6 +10,7 @@ require "json"
 require_relative "lib/version"
 require_relative "lib/ext/gosu_color"
 require_relative "lib/setting"
+require_relative "lib/taggable"
 
 require_relative "lib/map"
 require_relative "lib/map/tile"

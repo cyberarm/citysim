@@ -3,7 +3,7 @@ module CitySim
     class PowerPlantZone < Zone
       def setup
         @map.every(self, 1000) do
-          route = nearest_route(PowerLineRoute)
+          route = nearest_route(:powerlinelike)
           create_agent(PowerAgent, route, nil) if route
         end
       end

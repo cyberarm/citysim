@@ -5,10 +5,10 @@ module CitySim
       def setup
         @residents = 0
         @map.every(self, 10_000) do
-          if route = nearest_route(RoadRoute)
-            choice = @map.elements.select {|e| e if e.is_a?(CommercialZone)}.shuffle.detect {|c| c.nearest_route(RoadRoute) != nil}
+          if route = nearest_route(:roadlike)
+            choice = @map.elements.select {|e| e if e.is_a?(CommercialZone)}.shuffle.detect {|c| c.nearest_route(:roadlike) != nil}
             if choice
-              create_agent(VehicleAgent, route, choice.nearest_route(RoadRoute))
+              create_agent(VehicleAgent, route, choice.nearest_route(:roadlike))
             end
           end
         end

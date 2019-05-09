@@ -2,6 +2,7 @@ module CitySim
   class Map
     class Element
       include CyberarmEngine::Common
+      include CitySim::Taggable
 
       attr_reader :position, :tiles, :box
       def initialize(map, type, position)
