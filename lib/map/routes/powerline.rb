@@ -3,10 +3,10 @@ module CitySim
     class PowerLineRoute < Route
       def setup
         @sprites = {
-          curve:                 get_image("assets/powerlines/powerline_curve.png"),
-          straight:              get_image("assets/powerlines/powerline_straight.png"),
-          t_intersection:        get_image("assets/powerlines/powerline_T.png"),
-          four_way_intersection: get_image("assets/powerlines/powerline_4_way.png"),
+          curve:                 get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_curve.png"),
+          straight:              get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_straight.png"),
+          t_intersection:        get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_T.png"),
+          four_way_intersection: get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_4_way.png"),
         }
         @image = @sprites[:straight]
         @angle = 0

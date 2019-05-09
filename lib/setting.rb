@@ -1,8 +1,8 @@
 module CitySim
   class Setting
     def self.setup
-      save_defaults unless File.exist?("assets/settings.json")
-      @store = JSON.parse(File.read("assets/settings.json"), symbolize_names: true)
+      save_defaults unless File.exist?("#{GAME_ROOT_PATH}/assets/settings.json")
+      @store = JSON.parse(File.read("#{GAME_ROOT_PATH}/assets/settings.json"), symbolize_names: true)
     end
 
     def self.save_defaults
@@ -10,7 +10,7 @@ module CitySim
         debug_mode: false,
       }
 
-      File.open("assets/settings.json", "w") {|f| f.write(JSON.dump(hash))}
+      File.open("#{GAME_ROOT_PATH}/assets/settings.json", "w") {|f| f.write(JSON.dump(hash))}
     end
 
     def self.enabled?(key)

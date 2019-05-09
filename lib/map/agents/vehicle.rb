@@ -106,8 +106,8 @@ module CitySim
       def type=(type)
         @type = type
 
-        @body_image    = get_image("assets/vehicles/#{type}_body.png")
-        @overlay_image = get_image("assets/vehicles/#{type}_overlay.png")
+        @body_image    = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_body.png")
+        @overlay_image = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_overlay.png")
 
         @image = Gosu.render(@body_image.width, @body_image.height) do
           @body_image.draw(0, 0, 0, 1, 1, @color)

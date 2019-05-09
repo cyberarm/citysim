@@ -64,4 +64,6 @@ require_relative "lib/menus/pause_game"
 require_relative "lib/game"
 require_relative "lib/window"
 
+GAME_ROOT_PATH = File.expand_path(File.dirname(__FILE__))
+
 CitySim::Window.new.show

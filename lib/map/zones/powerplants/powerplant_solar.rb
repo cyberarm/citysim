@@ -3,7 +3,7 @@ module CitySim
     class PowerPlantSolarZone < PowerPlantZone
       def setup
         super
-        @image = get_image("assets/powerplants/powerplant_solar.png")
+        @image = get_image("#{GAME_ROOT_PATH}/assets/powerplants/powerplant_solar.png")
       end
 
       def draw
