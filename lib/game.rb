@@ -79,6 +79,7 @@ module CitySim
         stack do
           label "Time"
           flow do
+            button("▐ ▌")  { @map.speed = 0.0 }
             button("1x")  { @map.speed = 1.0 }
             button("5x")  { @map.speed = 5.0 }
             button("10x") { @map.speed = 10.0 }

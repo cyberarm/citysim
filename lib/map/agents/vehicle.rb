@@ -93,9 +93,9 @@ module CitySim
 
       def choose_body_color
         [
-          Gosu::Color::RED,
-          Gosu::Color::GREEN,
-          Gosu::Color.rgb(100, 100, 255),
+          Gosu::Color.rgb(153, 102, 255), # Purple-ish
+          Gosu::Color.rgb(255, 127, 50), # Orange-ish
+          Gosu::Color::WHITE,
         ].sample
       end
 
