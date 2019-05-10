@@ -24,6 +24,7 @@ require_relative "lib/map/store/level"
 require_relative "lib/map/route"
 require_relative "lib/map/routes/road"
 require_relative "lib/map/routes/powerline"
+require_relative "lib/map/routes/road_and_powerline"
 
 require_relative "lib/map/zone"
 require_relative "lib/map/zones/residential"

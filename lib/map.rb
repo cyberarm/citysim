@@ -253,18 +253,16 @@ module CitySim
       return false unless unbound || @money >= tool.cost
 
       return false unless tool.can_use?(x, y)
-      element = nil
-
-      unless tool.type == :demolition
-        element = create_element(tool.places, CyberarmEngine::Vector.new(x, y))
-        @elements << element
-      end
 
       charge(tool.cost) unless unbound
 
-      tool.use(x, y, element)
+      unless tool.type == :demolition
+        tool.use(x, y, create_element(tool.places, CyberarmEngine::Vector.new(x, y)))
+      else
+        tool.use(x, y, nil)
+      end
 
-      return element
+      return @elements.last
     end
 
     def create_element(places, position)

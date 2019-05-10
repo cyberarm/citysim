@@ -34,7 +34,7 @@ module CitySim
       end
 
       def travels_along
-        RoadRoute
+        :roadlike
       end
 
       def at_goal?

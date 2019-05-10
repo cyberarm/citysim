@@ -10,7 +10,7 @@ module CitySim
       end
 
       def travels_along
-        Route
+        :routelike
       end
     end
   end

@@ -80,6 +80,7 @@ module CitySim
         end
 
         element.tiles = tiles
+        @map.elements << element
       end
 
       def can_use?(x, y)

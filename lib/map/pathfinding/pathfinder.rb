@@ -24,7 +24,7 @@ module CitySim
 
         attr_reader :map, :source, :goal, :travels_along, :allow_diagonal
         attr_reader :path, :age
-        def initialize(map, source, goal, travels_along = Route, allow_diagonal = false)
+        def initialize(map, source, goal, travels_along = :routelike, allow_diagonal = false)
           @map = map
           @source = source
           @goal = goal
@@ -35,7 +35,7 @@ module CitySim
           @created_nodes = 0
           @nodes = []
           @path  = []
-          @tiles = @map.tiles.select {|tile| tile.element.is_a?(travels_along)}
+          @tiles = @map.tiles.select {|tile| tile.element && tile.element.has_tag?(travels_along)}
 
           @visited = Hash.new do |hash, value|
             hash[value] = Hash.new {|h, v| h[v] = false}
@@ -131,7 +131,7 @@ module CitySim
 
         def create_node(x, y, parent = nil)
           return unless tile = @map.grid.dig(x, y)
-          return unless tile.element.is_a?(@travels_along) # Enabling this causes infinite loops...
+          return unless tile.element && tile.element.has_tag?(@travels_along)
           return if @visited.dig(x, y)
           return if @nodes.detect {|node| node.tile.position.x == x && node.tile.position.y == y}
 
