@@ -118,7 +118,7 @@ module CitySim
       @level.save
     end
 
-    # returns list of Elements with Zones befroe Routes
+    # returns list of Elements with Zones before Routes
     def sorted_elements
       list = []
       list << @elements.select {|e| e.is_a?(Zone)}
@@ -278,6 +278,12 @@ module CitySim
         RoadRoute.new(self, :route_road, position)
       when :route_powerline
         PowerLineRoute.new(self, :route_powerline, position)
+      when :route_road_and_powerline
+        @tool = :route_road
+        use_tool(true, position.x, position.y)
+        @tool = :route_powerline
+        use_tool(true, position.x, position.y)
+        nil
 
       when :powerplant_coal
         PowerPlantCoalZone.new(self, :powerplant_coal, position)

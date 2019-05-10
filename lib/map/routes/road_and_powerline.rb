@@ -1,17 +1,16 @@
 module CitySim
   class Map
-    attr_reader :base
     class RoadAndPowerlineRoute < Route
       def setup
+        @type = :route_road_and_powerline
+
         if @map.grid.dig(@position.x, @position.y).element.is_a?(RoadRoute)
-          @base = :road
           @road = @map.grid.dig(@position.x, @position.y).element
           @powerline = PowerLineRoute.new(@map, :route_powerline, @position)
           @map.elements.delete(@road)
           @map.elements.delete(@powerline)
 
         elsif @map.grid.dig(@position.x, @position.y).element.is_a?(PowerLineRoute)
-          @base = :powerline
           @road = RoadRoute.new(@map, :route_road, @position)
           @powerline = @map.grid.dig(@position.x, @position.y).element
           @map.elements.delete(@road)
