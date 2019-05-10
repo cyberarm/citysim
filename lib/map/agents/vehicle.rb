@@ -132,7 +132,7 @@ module CitySim
         return if at_goal?
         @image.draw_rot(@position.x * @map.tile_size + @map.half_tile_size, @position.y * @map.tile_size + @map.half_tile_size, 3, @angle)
 
-        debug_draw if Setting.enabled?(:debug_mode)
+        debug_draw if Setting.enabled?(:debug_pathfinding)
       end
 
       def debug_draw
