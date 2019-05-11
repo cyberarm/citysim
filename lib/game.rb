@@ -28,8 +28,7 @@ module CitySim
       theme[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
       theme[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      CyberarmEngine::Theme::THEME.merge!(theme)
-      # @root_container.style(theme)
+      set_theme(theme)
 
       @toolbar = flow(padding: 5) do |f|
         background Gosu::Color.rgba(125,125,150, 200)

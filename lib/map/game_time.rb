@@ -96,11 +96,15 @@ module CitySim
       end
 
       def every(owner, ms, &block)
-        @timers << Timer.new(true, owner, ms, @time, block)
+        timer = Timer.new(true, owner, ms, @time, block)
+        @timers << timer
+        return timer
       end
 
       def after(owner, ms, &block)
-        @timers << Timer.new(false, owner, ms, @time, block)
+        timer = Timer.new(false, owner, ms, @time, block)
+        @timers << timer
+        return timer
       end
 
       def removed(element)
