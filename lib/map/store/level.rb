@@ -4,10 +4,9 @@ module CitySim
       class Level
         include Save, Load
 
-        def initialize(map, savefile)
-          @map = map
+        def initialize(city_name, savefile)
           @savefile = savefile
-          @savefile ||= "data/#{map.city_name}.save"
+          @savefile ||= "data/#{city_name}.save"
           @savefile ||= "data/unnamed_#{Time.now.strftime("%Y-%M-%d_%s")}.save"
 
           @store = Hash.new

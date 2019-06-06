@@ -14,7 +14,7 @@ module CitySim
       @half_tile_size = @tile_size / 2
       @city_name = File.basename(@game.options[:map_name], ".*") if @game.options[:map_name]
 
-      @level = Store::Level.new(self, savefile)
+      @level = Store::Level.new(@city_name, savefile)
       @rows = @game.options[:map_rows] if @game.options[:map_rows]
       @columns = @game.options[:map_columns] if @game.options[:map_columns]
 
@@ -33,13 +33,18 @@ module CitySim
       @drag_speed = 0.1
       @offset = CyberarmEngine::Vector.new
 
+      @scale  = 1.0
+      @old_scale = @scale
+      @min_scale, @max_scale = 0.25, 4.0
+      @scale_step = 0.25
+
       @income = 0
       @outcome= 0
 
       generate_map
 
       load_level if savefile
-      position_map
+      center_map
     end
 
     def store
@@ -59,9 +64,9 @@ module CitySim
     end
 
     # Center map on screen
-    def position_map
-      @offset.x = normalize(window.width/2  - width/2)  * @tile_size
-      @offset.y = normalize(window.height/2 - height/2) * @tile_size
+    def center_map
+      @offset.x = normalize(window.width  / 2 - width  / 2) * (@tile_size * @scale)
+      @offset.y = normalize(window.height / 2 - height / 2) * (@tile_size * @scale)
     end
 
     def load_level
@@ -147,19 +152,21 @@ module CitySim
 
     def draw
       Gosu.translate(@offset.x, @offset.y) do
-        @map_tiles ||= Gosu.record(@rows * @tile_size, @columns * @tile_size) do
-          @columns.times do |y|
-            @rows.times do |x|
-              @grid[x][y].draw(@tile_size)
+        Gosu.scale(@scale, @scale, window.width / 2, window.height / 2) do
+          @map_tiles ||= Gosu.record(@rows * @tile_size, @columns * @tile_size) do
+            @columns.times do |y|
+              @rows.times do |x|
+                @grid[x][y].draw(@tile_size)
+              end
             end
           end
+
+          @map_tiles.draw(0, 0, -1)
+          @elements.each(&:draw)
+          @agents.each(&:draw)
+
+          tool.draw if tool
         end
-
-        @map_tiles.draw(0, 0, -1)
-        @elements.each(&:draw)
-        @agents.each(&:draw)
-
-        tool.draw if tool
       end
     end
 
@@ -219,6 +226,8 @@ module CitySim
       case id
       when Gosu::MsMiddle
         @drag_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @offset
+      when Gosu::KbSpace
+        center_map
       end
     end
     def button_up(id)
@@ -228,7 +237,33 @@ module CitySim
       when Gosu::KbEscape
         @game.push_state(Menus::PauseGame.new(map: self)) unless @tool
         @tool = nil if @tool
+      when Gosu::MsWheelDown
+        return
+        @scale -= @scale_step
+
+        if @scale < @min_scale
+          @scale = @min_scale
+        else
+          @old_scale = @scale + @scale_step
+          zoom_map
+        end
+      when Gosu::MsWheelUp
+        return
+        @scale += @scale_step
+
+        if @scale > @max_scale
+          @scale = @max_scale
+        else
+          @old_scale = @scale - @scale_step
+          zoom_map
+        end
       end
+    end
+
+    def zoom_map
+      # Based on: https://gamedev.stackexchange.com/a/9344
+      @offset.x = @offset.x - (window.mouse_x / window.width  * ((window.width  / (@tile_size * @scale)) - @rows))
+      @offset.y = @offset.y - (window.mouse_y / window.height * ((window.height / (@tile_size * @scale)) - @columns))
     end
 
     def active_tile
