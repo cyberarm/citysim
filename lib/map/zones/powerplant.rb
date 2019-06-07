@@ -2,6 +2,8 @@ module CitySim
   class Map
     class PowerPlantZone < Zone
       def setup
+        add_tag(:produces_power)
+
         @map.every(self, 1000) do
           route = nearest_route(:powerlinelike)
           create_agent(PowerAgent, route, nil) if route
