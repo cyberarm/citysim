@@ -2,6 +2,10 @@ module CitySim
   class Map
     class PowerPlantZone < Zone
       def setup
+        add_tag(:powerplantlike)
+
+        @needs = Data.new(0, 0, 5)
+        add_tag(:needs_workers)
         add_tag(:produces_power)
 
         @map.every(self, 1000) do

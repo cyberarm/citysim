@@ -2,7 +2,9 @@ module CitySim
   class Map
     class ResidentialZone < Zone
       def setup
-        add_tag(:receives_residents)
+        @needs = Data.new(5, 10)
+        add_tag(:needs_residents)
+        add_tag(:needs_power)
 
         @map.every(self, 10_000) do
           if route = nearest_route(:roadlike)

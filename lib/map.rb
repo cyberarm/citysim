@@ -8,6 +8,8 @@ module CitySim
       Map::Tool.reset
       Map::Tool.tools(self) # setup tools
 
+      Map::Component.setup
+
       @game = game
       @rows, @columns = rows, columns
       @tile_size = tile_size

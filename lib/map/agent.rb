@@ -5,13 +5,14 @@ module CitySim
       include CitySim::Taggable
       include CitySim::Map::Pathfinding
 
-      attr_reader :position
-      def initialize(map:, position:, goal:)
+      attr_reader :position, :options
+      def initialize(map:, position:, goal:, options: {})
         add_tag(:agentlike)
 
         @map = map
         @position = position
         set_goal(goal) if goal
+        @options = options
 
         setup
       end

@@ -1,6 +1,8 @@
 module CitySim
   class Map
     class Zone < Element
+      attr_reader :data, :needs
+
       def initialize(map, type, position)
         add_tag(:zonelike)
         @data = Data.new
@@ -8,13 +10,44 @@ module CitySim
         super
       end
 
-      def create_agent(agent, route, goal)
-        @map.agents << agent.new(map: @map, position: route.position, goal: goal)
+      def update
+        handle_wants_and_needs
+      end
+
+      def handle_wants_and_needs
+        component(:consumes_power) if has_tag?(:needs_power)
+        component(:consumes_goods) if has_tag?(:needs_goods)
+
+        component(:produces_power) if has_tag?(:produces_power)
+        component(:produces_goods) if has_tag?(:produces_goods)
+      end
+
+      def component(component)
+        Component.use(self, component)
+      end
+
+      def create_agent(agent, route, goal, options = {})
+        @map.agents << agent.new(map: @map, position: route.position, goal: goal, options: options)
       end
 
       def nearest_route(route)
         neighbors = @map.neighbors(self, :eight_way, route)
         neighbors.values.flatten.select{|v| v.element.has_tag?(route)}.sample
+      end
+
+      def send_packet(type, origin, target, options)
+        create_agent(Packet, origin, target, options)
+      end
+
+      def handle_packet(packet)
+        packet_data = packet.options
+        case packet_data[:type]
+        when :worker_request
+        when :shopper_request
+        when :resident_request
+        when :power_request
+        when :goods_request
+        end
       end
 
       def debug_draw
