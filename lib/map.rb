@@ -3,7 +3,7 @@ module CitySim
     include CyberarmEngine::Common
 
     attr_reader :money, :tiles, :elements, :agents, :tile_size, :half_tile_size, :grid, :city_name
-    attr_reader :rows, :columns
+    attr_reader :rows, :columns, :scale
     def initialize(game:, rows: 33, columns: 33, tile_size: 64, savefile: nil)
       Map::Tool.reset
       Map::Tool.tools(self) # setup tools
@@ -240,7 +240,6 @@ module CitySim
         @game.push_state(Menus::PauseGame.new(map: self)) unless @tool
         @tool = nil if @tool
       when Gosu::MsWheelDown
-        return
         @scale -= @scale_step
 
         if @scale < @min_scale
@@ -250,7 +249,6 @@ module CitySim
           zoom_map
         end
       when Gosu::MsWheelUp
-        return
         @scale += @scale_step
 
         if @scale > @max_scale
@@ -269,17 +267,25 @@ module CitySim
     end
 
     def active_tile
-      @grid.dig(grid_x,grid_y)
+      @grid.dig(grid_x, grid_y)
     end
 
     # Mouse position in grid coordinates
     def grid_x
-      normalize(window.mouse_x - @offset.x)
+      normalize_zoom(window.mouse_x - @offset.x)
     end
 
     # Mouse position in grid coordinates
     def grid_y
-      normalize(window.mouse_y - @offset.y)
+      normalize_zoom(window.mouse_y - @offset.y)
+    end
+
+    def normalize(n)
+      (n / @tile_size.to_f).floor
+    end
+
+    def normalize_zoom(n)
+      (n / (@tile_size * @scale).to_f).floor
     end
 
     def use_tool(unbound = false, x = grid_x, y = grid_y)
@@ -342,10 +348,6 @@ module CitySim
 
     def charge(cost)
       @outcome += cost
-    end
-
-    def normalize(n)
-      (n / @tile_size.to_f).floor
     end
 
     def vary_color(color, jitter = 3)

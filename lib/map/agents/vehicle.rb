@@ -118,7 +118,7 @@ module CitySim
           body_image    = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_body.png")
           overlay_image = get_image("#{GAME_ROOT_PATH}/assets/vehicles/#{type}_overlay.png")
 
-          image = Gosu.render(body_image.width, body_image.height) do
+          image = Gosu.render(body_image.width, body_image.height, retro: true) do
             body_image.draw(0, 0, 0, 1, 1, @color)
             overlay_image.draw(0, 0, 1)
           end
