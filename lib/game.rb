@@ -106,13 +106,12 @@ module CitySim
           @agents_label = label 0, text_size: 22
         end
 
-        if Setting.enabled?(:debug_info_bar)
-          stack(margin: 5) do
-            label "DEBUG", text_size: 26, color: Gosu::Color.rgb(255, 75, 0)
-            @debug_zoom_label = label "Zoom"
-            @debug_grid_coord_label = label "Grid Coord."
-          end
+        @debug_info_bar = stack(margin: 5) do
+          label "DEBUG", text_size: 26, color: Gosu::Color.rgb(255, 75, 0)
+          @debug_zoom_label = label "Zoom"
+          @debug_grid_coord_label = label "Grid Coord."
         end
+        @debug_info_bar.hide
       end
     end
 
@@ -160,8 +159,12 @@ module CitySim
       @time_label.value = @map.current_time.strftime("%Y-%m-%d %H:%M:%S")
 
       if Setting.enabled?(:debug_info_bar)
+        @debug_info_bar.show unless @debug_info_bar.visible?
+
         @debug_zoom_label.value = "Zoom #{@map.scale}"
         @debug_grid_coord_label.value = "Grid Coord. #{@map.grid_x}:#{@map.grid_y}"
+      else
+        @debug_info_bar.hide if @debug_info_bar.visible?
       end
 
       @root_container.recalculate if @active_width != window.width || @active_height != window.height

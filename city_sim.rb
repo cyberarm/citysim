@@ -74,6 +74,7 @@ require_relative "lib/menus/main"
 require_relative "lib/menus/new_game"
 require_relative "lib/menus/load_game"
 require_relative "lib/menus/pause_game"
+require_relative "lib/menus/settings"
 require_relative "lib/game"
 require_relative "lib/window"
 

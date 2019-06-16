@@ -7,16 +7,16 @@ module CitySim
 
         flow do
           label "City Name"
-          @name = edit_line "Centerville"
+          @name = edit_line Setting.get(:default_map_name)
         end
 
         flow do
           label "Map Width"
-          @rows = edit_line "33"
+          @rows = edit_line Setting.get(:default_map_width)
         end
         flow do
           label "Map Height"
-          @columns = edit_line "33"
+          @columns = edit_line Setting.get(:default_map_height)
         end
 
         @error = label "", color: Gosu::Color::RED

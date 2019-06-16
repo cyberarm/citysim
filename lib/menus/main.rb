@@ -6,6 +6,7 @@ module CitySim
 
         button("New Game") { push_state(CitySim::Menus::NewGame) }
         button("Load Game") { push_state(CitySim::Menus::LoadGame) }
+        button("Settings") { push_state(CitySim::Menus::Settings) }
         button("Exit") { $window.close }
 
         flow(margin_top: 10) do

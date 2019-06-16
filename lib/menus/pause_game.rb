@@ -10,8 +10,8 @@ module CitySim
           push_state(previous_state)
         end
 
-        button "Options" do
-          # push_state(OptionsMenu)
+        button "Settings" do
+          push_state(Settings)
         end
 
         button "Save and Quit" do
@@ -20,7 +20,7 @@ module CitySim
         end
 
 
-        button "Back" do
+        button "Resume" do
           push_state(previous_state)
         end
 
