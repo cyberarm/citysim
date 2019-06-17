@@ -415,8 +415,10 @@ module CitySim
     end
 
     def search(x, y, limit)
+      limit = [limit] unless limit.is_a?(Array)
+
       tile = @grid.dig(x, y)
-      if tile && tile.element && tile.element.has_tag?(limit)
+      if tile && tile.element && tile.element.tags.detect { |tag| limit.include?(tag) }
         tile
       else
         nil
@@ -438,6 +440,10 @@ module CitySim
     # FIXED delta time for simulation
     def delta
       @game_time.delta
+    end
+
+    def milliseconds
+      @game_time.base_time.to_f * 1000.0
     end
 
     def speed=(n)

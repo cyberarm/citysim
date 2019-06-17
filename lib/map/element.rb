@@ -4,11 +4,12 @@ module CitySim
       include CyberarmEngine::Common
       include CitySim::Taggable
 
-      attr_reader :position, :tiles, :box
+      attr_reader :map, :position, :tiles, :box, :data
       def initialize(map, type, position)
         @map  = map
         @type = type
         @position = position # in grid coordinates
+        @data = {}
 
         @tiles = []
         @tile_size = @map.tile_size
@@ -98,11 +99,12 @@ module CitySim
         {
           type: @type,
           position: @position.to_h,
-
+          data: @data,
         }
       end
 
       def load(hash)
+        # load data
       end
     end
   end
