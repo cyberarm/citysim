@@ -32,7 +32,7 @@ module CitySim
 
       @toolbar = flow(padding: 5) do |f|
         background Gosu::Color.rgba(125,125,150, 200)
-        stack(padding_top: 5, margin_right: 10) do |s|
+        stack(margin_right: 5) do |s|
           label "Zones"
           flow do
             button("Residential") { @map.tool = :zone_residential }
@@ -41,7 +41,7 @@ module CitySim
           end
         end
 
-        stack(margin_right: 10) do
+        stack(margin_right: 5) do
           label "Power"
           flow do
             button("Coal") { @map.tool = :powerplant_coal }
@@ -50,7 +50,7 @@ module CitySim
           end
         end
 
-        stack(margin_right: 10) do
+        stack(margin_right: 5) do
           label "Routes"
           flow do
             button("Road") { @map.tool = :route_road }
@@ -58,7 +58,7 @@ module CitySim
           end
         end
 
-        stack(margin_right: 10) do
+        stack(margin_right: 5) do
           label "Services"
           flow do
             button("Fire Department") { @map.tool = :service_fire_department }
@@ -67,7 +67,7 @@ module CitySim
           end
         end
 
-        stack(margin_right: 10) do
+        stack(margin_right: 5) do
           label "Other"
           flow do
             button("Demolish") { @map.tool = :other_demolish }

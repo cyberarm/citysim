@@ -8,7 +8,7 @@ module CitySim
         stack(margin: 5) do
 
           label "New Game"
-          stack do
+          stack(padding: 5) do
             background 0xff005500
             flow do
               label "Default Map Name"
@@ -25,7 +25,7 @@ module CitySim
           end
 
           label "Debugging", margin_top: 15
-          stack do
+          stack(padding: 5) do
             background 0xffff5500
             @debug_pathfinding = check_box "Pathfinding", checked: Setting.enabled?(:debug_pathfinding)
             @debug_mode        = check_box "Show edges", checked: Setting.enabled?(:debug_mode)
