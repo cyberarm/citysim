@@ -3,7 +3,9 @@ module CitySim
     class PowerPlantCoalZone < PowerPlantZone
       def setup
         super
-        @needs.goods = 5
+        @data[:produce_power_amount] = 50
+        @data[:max_power_stored] = 50
+
         add_tag(:needs_goods)
 
         @image = get_image("#{GAME_ROOT_PATH}/assets/powerplants/powerplant_coal.png")

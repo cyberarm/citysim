@@ -4,14 +4,12 @@ module CitySim
       def setup
         add_tag(:powerplantlike)
 
-        @needs = Data.new(0, 0, 5)
         add_tag(:needs_workers)
         add_tag(:produces_power)
 
-        @map.every(self, 1000) do
-          route = nearest_route(:powerlinelike)
-          create_agent(PowerAgent, route, nil) if route
-        end
+        @data[:produce_power_interval] = 1_000 # ms in game time 
+        @data[:produce_power_amount] = 10
+        @data[:max_power_stored] = 0
       end
 
       def color

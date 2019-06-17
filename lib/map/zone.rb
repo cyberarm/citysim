@@ -5,8 +5,6 @@ module CitySim
 
       def initialize(map, type, position)
         add_tag(:zonelike)
-        @data = Data.new
-
         super
       end
 

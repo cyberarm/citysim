@@ -3,6 +3,9 @@ module CitySim
     class PowerPlantSolarZone < PowerPlantZone
       def setup
         super
+        @data[:produce_power_amount] = 10
+        @data[:max_power_stored] = 0
+        
         @image = get_image("#{GAME_ROOT_PATH}/assets/powerplants/powerplant_solar.png")
       end
 

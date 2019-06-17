@@ -27,7 +27,6 @@ require_relative "lib/map/routes/powerline"
 require_relative "lib/map/routes/road_and_powerline"
 
 require_relative "lib/map/zone"
-require_relative "lib/map/zones/data"
 require_relative "lib/map/zones/residential"
 require_relative "lib/map/zones/commercial"
 require_relative "lib/map/zones/industrial"
@@ -66,7 +65,6 @@ require_relative "lib/map/pathfinding"
 require_relative "lib/map/pathfinding/pathfinder"
 
 require_relative "lib/map/agent"
-require_relative "lib/map/agents/power"
 require_relative "lib/map/agents/vehicle"
 require_relative "lib/map/agents/packet"
 

@@ -18,6 +18,22 @@ module CitySim
 
         @font = CyberarmEngine::Text.new(label, size: 26, shadow: false, z: -1)
 
+
+        @data[:power]     = 0
+        @data[:max_power] = 0
+
+        @data[:residents]     = 0
+        @data[:max_residents] = 0
+
+        @data[:workers]     = 0
+        @data[:max_workers] = 0
+
+        @data[:shoppers]     = 0
+        @data[:max_shoppers] = 0
+        
+        @data[:goods]     = 0
+        @data[:max_goods] = 0
+
         setup
       end
 
@@ -104,7 +120,7 @@ module CitySim
       end
 
       def load(hash)
-        # load data
+        @data.merge!(hash[:data])
       end
     end
   end
