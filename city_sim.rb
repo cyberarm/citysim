@@ -16,6 +16,7 @@ require_relative "lib/map"
 require_relative "lib/map/tile"
 require_relative "lib/map/game_time"
 require_relative "lib/map/element"
+require_relative "lib/map/notification"
 
 require_relative "lib/map/store/load"
 require_relative "lib/map/store/save"

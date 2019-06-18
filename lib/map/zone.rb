@@ -6,6 +6,14 @@ module CitySim
       def initialize(map, type, position)
         add_tag(:zonelike)
         super
+
+        @notification = Notification.new(self)
+      end
+
+      def draw
+        super
+
+        @notification.draw
       end
 
       def update
