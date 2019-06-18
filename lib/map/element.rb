@@ -30,7 +30,7 @@ module CitySim
 
         @data[:shoppers]     = 0
         @data[:max_shoppers] = 0
-        
+
         @data[:goods]     = 0
         @data[:max_goods] = 0
 
@@ -120,7 +120,7 @@ module CitySim
       end
 
       def load(hash)
-        @data.merge!(hash[:data])
+        @data.merge!(hash[:data]) if hash[:data]
       end
     end
   end

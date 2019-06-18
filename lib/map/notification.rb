@@ -77,7 +77,7 @@ module CitySim
 
         @title_text.x = @center_point.x - (@title_text.width / 2)
         @title_text.y = @center_point.y - (height + @padding)
-        
+
         @message_text.x = @center_point.x - (@message_text.width / 2)
         @message_text.y = @title_text.y + @title_text.height + @padding
 
