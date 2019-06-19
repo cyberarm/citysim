@@ -14,7 +14,7 @@ module CitySim
         @message_text = CyberarmEngine::Text.new("", size: 18, color: Gosu::Color::BLACK, z: 6)
 
         @padding = 10
-        @visible = false
+        @visible = true
 
         @setup = false
       end
@@ -68,7 +68,7 @@ module CitySim
 
       def draw_message
         @title_text.text = @title
-        @message_text.text = @message
+        @message_text.text = "Power: #{@zone.data[:power]}"#@message
 
         widest  = @title_text.width > @message_text.width ? @title_text : @message_text
 

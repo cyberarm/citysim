@@ -13,7 +13,7 @@ module CitySim
       def produce_power_amount(element)
         element.data[:produce_power_amount]
       end
-      
+
       def max_power_stored(element)
         element.data[:max_power_stored]
       end
@@ -56,13 +56,20 @@ module CitySim
 
       def deliver_power(element)
         return unless element.data[:power] > 0
-        
+
         clients = find_connected(element)
-        
-        clients.each do |client|
+
+        clients.each_with_index do |client, i|
           break unless element.data[:power] > 0
 
+          # Skip to next client if client if maxed out on power storage
           next unless client.data[:power] < client.data[:max_power]
+          # Pass power along if this client is supplied
+          # next_client = clients[i + 1]
+          # client_has_sufficient_supply = client.data[:power] > client.data[:max_power] / 2
+          # next_client_needs_supply = (next_client && next_client.data[:power] > next_client.data[:max_power] / 2)
+          # next if client_has_sufficient_supply && next_client_needs_supply
+
           element.data[:power] -= 1
           client.data[:power] += 1
         end

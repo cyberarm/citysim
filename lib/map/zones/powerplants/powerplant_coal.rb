@@ -3,6 +3,7 @@ module CitySim
     class PowerPlantCoalZone < PowerPlantZone
       def setup
         super
+
         @data[:produce_power_amount] = 50
         @data[:max_power_stored] = 50
 

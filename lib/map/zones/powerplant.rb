@@ -7,7 +7,7 @@ module CitySim
         add_tag(:needs_workers)
         add_tag(:produces_power)
 
-        @data[:produce_power_interval] = 1_000 # ms in game time 
+        @data[:produce_power_interval] = 500 # ms in game time
         @data[:produce_power_amount] = 10
         @data[:max_power_stored] = 0
       end

@@ -2,6 +2,7 @@ module CitySim
   class Map
     class CommercialZone < Zone
       def setup
+        add_tag(:needs_power)
         add_tag(:needs_workers)
         add_tag(:needs_shoppers)
         add_tag(:needs_goods)
