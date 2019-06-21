@@ -28,14 +28,14 @@ module CitySim
       theme[:Button][:hover][:background] = Gosu::Color.rgb(100, 100, 255)
       theme[:Button][:hover][:border_color] = Gosu::Color.rgb(100, 100, 250)
 
-      set_theme(theme)
+      theme(theme)
 
       @toolbar = flow(padding: 5) do |f|
         background Gosu::Color.rgba(125,125,150, 200)
         stack(margin_right: 5) do |s|
           label "Zones"
           flow do
-            button("Residential") { @map.tool = :zone_residential }
+            button("Residential"){ @map.tool = :zone_residential }
             button("Commercial") { @map.tool = :zone_commercial }
             button("Industrial") { @map.tool = :zone_industrial }
           end
@@ -44,8 +44,8 @@ module CitySim
         stack(margin_right: 5) do
           label "Power"
           flow do
-            button("Coal") { @map.tool = :powerplant_coal }
-            button("Solar") { @map.tool = :powerplant_solar }
+            button("Coal")    { @map.tool = :powerplant_coal }
+            button("Solar")   { @map.tool = :powerplant_solar }
             button("Nuclear") { @map.tool = :powerplant_nuclear }
           end
         end
@@ -53,7 +53,7 @@ module CitySim
         stack(margin_right: 5) do
           label "Routes"
           flow do
-            button("Road") { @map.tool = :route_road }
+            button("Road")      { @map.tool = :route_road }
             button("Powerline") { @map.tool = :route_powerline }
           end
         end
@@ -61,9 +61,9 @@ module CitySim
         stack(margin_right: 5) do
           label "Services"
           flow do
-            button("Fire Department") { @map.tool = :service_fire_department }
+            button("Fire Department")   { @map.tool = :service_fire_department }
             button("Police Department") { @map.tool = :service_police_department }
-            button("City Park") { @map.tool = :service_city_park }
+            button("City Park")         { @map.tool = :service_city_park }
           end
         end
 
@@ -71,14 +71,14 @@ module CitySim
           label "Other"
           flow do
             button("Demolish") { @map.tool = :other_demolish }
-            button("No Tool") { @map.tool = nil }
+            button("No Tool")  { @map.tool = nil }
           end
         end
 
         stack do
           label "Time"
           flow do
-            button("▐ ▌")  { @map.speed = 0.0 }
+            button("▐ ▌") { @map.speed = 0.0 }
             button("1x")  { @map.speed = 1.0 }
             button("5x")  { @map.speed = 5.0 }
             button("10x") { @map.speed = 10.0 }
