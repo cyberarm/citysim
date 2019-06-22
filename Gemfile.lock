@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    cyberarm_engine (0.7.0)
+    cyberarm_engine (0.8.1)
       gosu (~> 0.14.0)
     gosu (0.14.5)
 
@@ -12,4 +12,4 @@ DEPENDENCIES
   cyberarm_engine
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
