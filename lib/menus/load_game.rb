@@ -5,6 +5,8 @@ module CitySim
         label "CitySim", text_size: 58
         label "Load Game"
 
+        background 0xff111111
+
         button "Back" do
           push_state(previous_state)
         end

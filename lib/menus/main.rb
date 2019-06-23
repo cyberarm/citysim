@@ -4,6 +4,8 @@ module CitySim
       def setup
         label "CitySim", text_size: 58
 
+        background 0xff111111
+
         button("New Game") { push_state(CitySim::Menus::NewGame) }
         button("Load Game") { push_state(CitySim::Menus::LoadGame) }
         button("Settings") { push_state(CitySim::Menus::Settings) }

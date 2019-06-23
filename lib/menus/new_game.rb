@@ -5,6 +5,8 @@ module CitySim
         label "CitySim", text_size: 58
         label "New Game"
 
+        background 0xff111111
+
         flow do
           label "City Name"
           @name = edit_line Setting.get(:default_map_name)

@@ -5,6 +5,8 @@ module CitySim
         label "CitySim", text_size: 58
         label "Settings", text_size: 36
 
+        background 0xff111111
+
         stack(margin: 5) do
 
           label "New Game"
@@ -87,12 +89,6 @@ module CitySim
         else
           return true
         end
-      end
-
-      def draw
-        fill 0xff111111
-
-        super
       end
     end
   end
