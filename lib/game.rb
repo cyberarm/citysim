@@ -2,9 +2,6 @@ module CitySim
   class Game < CyberarmEngine::GuiState
     attr_reader :money, :citizens
     def setup
-      @active_width  = window.width
-      @active_height = window.height
-
       @map = CitySim::Map.new(game: self, savefile: @options[:savefile])
 
       # TODO: Implement a styling system
@@ -30,7 +27,7 @@ module CitySim
 
       theme(theme)
 
-      @toolbar = flow(padding: 5) do |f|
+      @toolbar = flow(padding: 5, width: 1.0) do |f|
         background Gosu::Color.rgba(125,125,150, 200)
         stack(margin_right: 5) do |s|
           label "Zones"
@@ -166,11 +163,6 @@ module CitySim
       else
         @debug_info_bar.hide if @debug_info_bar.visible?
       end
-
-      @root_container.recalculate if @active_width != window.width || @active_height != window.height
-
-      @active_width  = window.width
-      @active_height = window.height
     end
   end
 end
