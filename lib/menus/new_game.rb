@@ -29,7 +29,7 @@ module CitySim
           button "Create" do
             if valid_options?
               window.text_input = nil
-              push_state(CitySim::Game.new(map_name: "data/#{@name.value}.save", map_rows: @rows.value.to_i, map_columns: @columns.value.to_i))
+              push_state(CitySim::Game.new(map_name: "#{@name.value}", map_rows: @rows.value.to_i, map_columns: @columns.value.to_i))
             end
           end
         end
@@ -39,8 +39,8 @@ module CitySim
             @error.value = "City Name must not be empty!"
             return false
 
-          elsif File.exist?("data/#{@name.value}.save")
-            @error.value = "Map with name: #{@name.value} already exists!"
+          elsif File.exist?("#{GAME_ROOT_PATH}/data/#{Map::Store::Level.safe_filename(@name.value)}.save")
+            @error.value = "Map with name: #{@name.value} (#{Map::Store::Level.safe_filename(@name.value)}) already exists!"
             return false
 
           elsif @rows.value.length == 0

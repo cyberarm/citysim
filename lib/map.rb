@@ -14,7 +14,7 @@ module CitySim
       @rows, @columns = rows, columns
       @tile_size = tile_size
       @half_tile_size = @tile_size / 2
-      @city_name = File.basename(@game.options[:map_name], ".*") if @game.options[:map_name]
+      @city_name = @game.options[:map_name] if @game.options[:map_name]
 
       @level = Store::Level.new(@city_name, savefile)
       @rows = @game.options[:map_rows] if @game.options[:map_rows]

@@ -6,8 +6,8 @@ module CitySim
 
         def initialize(city_name, savefile)
           @savefile = savefile
-          @savefile ||= "data/#{city_name}.save"
-          @savefile ||= "data/unnamed_#{Time.now.strftime("%Y-%M-%d_%s")}.save"
+          @savefile ||= "#{GAME_ROOT_PATH}/data/#{Level.safe_filename(city_name)}.save"
+          @savefile ||= "#{GAME_ROOT_PATH}/data/unnamed_#{Time.now.strftime("%Y-%M-%d_%s")}.save"
 
           @store = Hash.new
           @store = JSON.parse(File.read(@savefile), symbolize_names: true) if savefile
@@ -19,6 +19,11 @@ module CitySim
 
         def []=(key, value)
           @store[key] = value
+        end
+
+        def self.safe_filename(name)
+          regex = /[~`!@#$%^&*()=+\-{}\[\]<>?|:;'",.\\ ]/
+          name.to_s.downcase.gsub(regex, "_")
         end
       end
     end
