@@ -9,6 +9,10 @@ module CitySim
         @data[:max_power] = 5
         @data[:max_workers] = 20
         @data[:max_goods] = 25
+
+        @data[:produce_goods_interval] = 1_000
+        @data[:produce_goods_amount] = 2
+        @data[:max_goods_stored] = @data[:max_goods]
       end
 
       def color

@@ -68,7 +68,7 @@ module CitySim
 
       def draw_message
         @title_text.text = @title
-        @message_text.text = "Power: #{@zone.data[:power]}"#@message
+        @message_text.text = "Power: #{@zone.data[:power]}\nGoods: #{@zone.data[:goods]}\nResidents: #{@zone.data[:residents]}\nWorkers: #{@zone.data[:workers]}"#@message
 
         widest  = @title_text.width > @message_text.width ? @title_text : @message_text
 
