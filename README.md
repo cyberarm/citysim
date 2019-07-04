@@ -9,4 +9,4 @@ Creating a simple city simulation
 * Enter repo and run: `bundle`
 
 ## Play
-`ruby city_sim.rb`
+`ruby citysim.rb`
