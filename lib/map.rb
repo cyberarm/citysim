@@ -182,11 +182,11 @@ module CitySim
       else
 
         direction = CyberarmEngine::Vector.new
-        direction.x =  1 if Gosu.button_down?(Gosu::KbA)
-        direction.x = -1 if Gosu.button_down?(Gosu::KbD)
+        direction.x =  1 if Gosu.button_down?(Gosu::KbA) || Gosu.button_down?(Gosu::KbLeft)
+        direction.x = -1 if Gosu.button_down?(Gosu::KbD) || Gosu.button_down?(Gosu::KbRight)
 
-        direction.y =  1 if Gosu.button_down?(Gosu::KbW)
-        direction.y = -1 if Gosu.button_down?(Gosu::KbS)
+        direction.y =  1 if Gosu.button_down?(Gosu::KbW) || Gosu.button_down?(Gosu::KbUp)
+        direction.y = -1 if Gosu.button_down?(Gosu::KbS) || Gosu.button_down?(Gosu::KbDown)
 
         scroll_speed = @scroll_speed
         if Gosu.button_down?(Gosu::KbLeftControl) || Gosu.button_down?(Gosu::KbRightControl)
