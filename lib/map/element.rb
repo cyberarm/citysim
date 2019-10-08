@@ -4,12 +4,13 @@ module CitySim
       include CyberarmEngine::Common
       include CitySim::Taggable
 
-      attr_reader :map, :position, :tiles, :box, :data
+      attr_reader :map, :position, :tiles, :box, :data, :runtime_data
       def initialize(map, type, position)
         @map  = map
         @type = type
         @position = position # in grid coordinates
         @data = {}
+        @runtime_data = {} # data which only lives while game is running
 
         @tiles = []
         @tile_size = @map.tile_size

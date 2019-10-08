@@ -5,10 +5,10 @@ module CitySim
         add_tag(:powerlinelike)
 
         @sprites = {
-          curve:                 get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_curve.png"),
-          straight:              get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_straight.png"),
-          t_intersection:        get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_T.png"),
-          four_way_intersection: get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_4_way.png"),
+          curve:                 get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_curve.png", retro: true),
+          straight:              get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_straight.png", retro: true),
+          t_intersection:        get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_T.png", retro: true),
+          four_way_intersection: get_image("#{GAME_ROOT_PATH}/assets/powerlines/powerline_4_way.png", retro: true),
         }
         @image = @sprites[:straight]
         @angle = 0

@@ -8,6 +8,8 @@ module CitySim
         super
 
         @notification = Notification.new(self)
+        @runtime_data[:power_network_changed] = true
+        @runtime_data[:road_network_changed]  = true
       end
 
       def draw

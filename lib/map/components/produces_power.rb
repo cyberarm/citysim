@@ -35,7 +35,13 @@ module CitySim
         element.data[:power] = max_power_stored(element) if element.data[:power] > max_power_stored(element)
       end
 
+      def network_valid?(element)
+        element.runtime_data[:connected_power_network] && !element.runtime_data[:power_network_changed]
+      end
+
       def find_connected(element)
+        return element.runtime_data[:connected_power_network] if network_valid?(element)
+
         visited = []
         pending = [element]
 
@@ -51,7 +57,8 @@ module CitySim
           visited << search
         end
 
-        return visited
+        element.runtime_data[:power_network_changed] = false
+        return element.runtime_data[:connected_power_network] = visited
       end
 
       def deliver_power(element)

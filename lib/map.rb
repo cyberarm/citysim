@@ -67,8 +67,8 @@ module CitySim
 
     # Center map on screen
     def center_map
-      @offset.x = normalize(window.width  / 2 - width  / 2) * (@tile_size * @scale)
-      @offset.y = normalize(window.height / 2 - height / 2) * (@tile_size * @scale)
+      @offset.x = normalize(center.x - width  / 2) * @tile_size
+      @offset.y = normalize(center.y - height / 2) * @tile_size
     end
 
     def load_level
@@ -153,8 +153,8 @@ module CitySim
     end
 
     def draw
-      Gosu.translate(@offset.x, @offset.y) do
-        Gosu.scale(@scale, @scale, window.width / 2, window.height / 2) do
+      Gosu.scale(@scale, @scale, center.x, center.y) do
+        Gosu.translate(@offset.x, @offset.y) do
           @map_tiles ||= Gosu.record(@rows * @tile_size, @columns * @tile_size) do
             @columns.times do |y|
               @rows.times do |x|
@@ -272,20 +272,34 @@ module CitySim
 
     # Mouse position in grid coordinates
     def grid_x
-      normalize_zoom(window.mouse_x - @offset.x)
+      (normalize_zoom(CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y)).x / @tile_size).floor
     end
 
     # Mouse position in grid coordinates
     def grid_y
-      normalize_zoom(window.mouse_y - @offset.y)
+      (normalize_zoom(CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y)).y / @tile_size).floor
     end
 
     def normalize(n)
       (n / @tile_size.to_f).floor
     end
 
-    def normalize_zoom(n)
-      (n / (@tile_size * @scale).to_f).floor
+    def normalize_zoom(vector)
+      neg_center = CyberarmEngine::Vector.new(-center.x, -center.y)
+
+      scaled_position = (vector) / @scale
+      scaled_translation = (neg_center / @scale + center)
+
+      inverse = (scaled_position + scaled_translation) - @offset
+
+      inverse.x = inverse.x.floor
+      inverse.y = inverse.y.floor
+
+      return inverse
+    end
+
+    def center
+      CyberarmEngine::Vector.new(window.width / 2, window.height / 2)
     end
 
     def use_tool(unbound = false, x = grid_x, y = grid_y)
